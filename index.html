@@ -10,34 +10,41 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: a chip "die" header, then one long column per project with a spec strip, prose on the left, tool screenshots on the right. Colors borrow from Innovus metal layers. */
+/* Palette: Neural Gray / Neural Dark / Neural Blue / black, with their tints. Layout: chip "die" header, one column per project, a darker band for the guzheng. */
 :root {
-  --bg: #F4F5F8;
+  --bg: #F0F4F9;
   --surface: #FFFFFF;
-  --fg: #121722;
-  --muted: #59627A;
-  --line: #D8DCE6;
-  --accent: #2A47D1;      /* metal-1 blue */
-  --accent-soft: #E3E8FB;
-  --hl: #E2B93B;          /* routing yellow */
-  --code-bg: #141925;
-  --code-fg: #E4E7EE;
-  --code-dim: #8796B5;
+  --fg: #111729;          /* neural dark */
+  --muted: #445669;
+  --line: #CCD5E2;
+  --accent: #2664EC;      /* neural blue */
+  --accent-soft: #E2E7EF;
+  --hl: #92C4FC;          /* light blue tint */
+  --gray: #94A3B7;        /* neural gray */
+  --code-bg: #111729;
+  --code-fg: #E2E7EF;
+  --code-dim: #94A3B7;
+  --panel: #111729;
+  --panel-fg: #F0F4F9;
+  --panel-muted: #94A3B7;
   --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
   --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0C0F16; --surface: #141925; --fg: #E6E9F0; --muted: #98A2B8; --line: #262D3D;
-    --accent: #8A9EFF; --accent-soft: #1C2442; --hl: #E8C455;
-    --code-bg: #080A10; --code-fg: #E4E7EE; --code-dim: #7D8BA8;
+    --bg: #000000; --surface: #111729; --fg: #F0F4F9; --muted: #94A3B7; --line: #1E293C;
+    --accent: #3E81F7; --accent-soft: #1E293C; --hl: #92C4FC; --gray: #94A3B7;
+    --code-bg: #0A0F1C; --code-fg: #E2E7EF; --code-dim: #94A3B7;
+    --panel: #111729; --panel-fg: #F0F4F9; --panel-muted: #94A3B7;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0C0F16; --surface: #141925; --fg: #E6E9F0; --muted: #98A2B8; --line: #262D3D;
-  --accent: #8A9EFF; --accent-soft: #1C2442; --hl: #E8C455;
-  --code-bg: #080A10; --code-fg: #E4E7EE; --code-dim: #7D8BA8;
+  --bg: #000000; --surface: #111729; --fg: #F0F4F9; --muted: #94A3B7; --line: #1E293C;
+  --accent: #3E81F7; --accent-soft: #1E293C; --hl: #92C4FC; --gray: #94A3B7;
+  --code-bg: #0A0F1C; --code-fg: #E2E7EF; --code-dim: #94A3B7;
+  --panel: #111729; --panel-fg: #F0F4F9; --panel-muted: #94A3B7;
   color-scheme: dark;
 }
 
@@ -123,14 +130,55 @@ pre.code .k { color: var(--hl); }
 .awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
 .awards h3 { font-size: 17px; font-stretch: 106%; font-weight: 700; margin-bottom: 10px; }
 .awards ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 15px; }
-.about { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 36px; align-items: start; }
-.about .sat { font-family: var(--f-mono); font-size: 14px; color: var(--muted); }
-.hobby-pics { display: flex; gap: 14px; align-items: flex-start; }
-.hobby-pics figure { width: 150px; }
-.hobby-pics img { height: 220px; width: 100%; object-fit: cover; object-position: top; }
 @media (max-width: 860px) {
-  .awards, .about { grid-template-columns: 1fr; }
+  .awards { grid-template-columns: 1fr; }
 }
+/* outside engineering */
+.life { display: grid; gap: 64px; }
+.life-intro { font-size: 17px; color: var(--muted); max-width: 36em; margin-top: -8px; }
+.kicker { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.life h3 { font-family: var(--f-display); font-stretch: 116%; font-weight: 800; font-size: clamp(26px, 4vw, 36px); line-height: 1.05; margin-block: 6px 14px; }
+.life p { max-width: 34em; }
+.facts-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.pill { font-size: 13px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.pill b { color: var(--accent); }
+
+.golf { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 40px; align-items: center; }
+.snaps { position: relative; min-height: 460px; }
+.snap { position: absolute; margin: 0; background: #fff; padding: 9px 9px 30px; box-shadow: 0 10px 30px rgba(17,23,41,.18); }
+.snap img { display: block; border: 0; border-radius: 0; width: 100%; height: auto; }
+.snap figcaption { position: absolute; left: 10px; right: 10px; bottom: 7px; font-family: var(--f-mono); font-size: 11px; color: #445669; margin: 0; }
+.snap.kid { width: 40%; left: 2%; top: 46px; transform: rotate(-5deg); z-index: 1; }
+.snap.yb { width: 60%; right: 0; top: 0; transform: rotate(3deg); }
+
+.guzheng { position: relative; background: var(--panel); color: var(--panel-fg); border-radius: 10px; padding: clamp(24px, 4vw, 48px); padding-left: clamp(24px, 22vw, 240px); overflow: hidden; min-height: 460px; display: flex; align-items: center; }
+.guzheng .kicker { color: var(--hl); }
+.guzheng p { color: var(--panel-fg); }
+.guzheng .strings { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(146,196,252,.07) 22px 23px); pointer-events: none; }
+.guzheng .instrument { position: absolute; left: clamp(18px, 3vw, 44px); top: 50%; height: 90%; width: auto; transform: translateY(-50%) rotate(-6deg); filter: drop-shadow(0 18px 30px rgba(0,0,0,.5)); pointer-events: none; }
+.gz-body { position: relative; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 32px; align-items: center; }
+.gz-body .pill { background: transparent; border-color: rgba(146,196,252,.35); color: var(--panel-fg); }
+.gz-body .pill b { color: var(--hl); }
+.video { margin: 0; }
+.video video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; }
+.video figcaption { color: var(--panel-muted); }
+
+.community { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.community figure { max-width: 380px; justify-self: end; }
+.cw { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.cw li { display: grid; gap: 2px; padding-left: 16px; border-left: 2px solid var(--hl); }
+.cw b { font-family: var(--f-display); font-stretch: 108%; font-size: 17px; }
+.cw span { color: var(--muted); font-size: 15px; }
+.sat-line { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .golf, .community, .gz-body { grid-template-columns: 1fr; }
+  .snaps { min-height: 400px; max-width: 520px; }
+  .guzheng { padding-left: clamp(24px, 4vw, 48px); padding-top: 110px; display: block; min-height: 0; }
+  .guzheng .instrument { height: auto; width: 110%; max-width: none; left: -5%; top: 20px; transform: rotate(-90deg) translateX(0); transform-origin: center; display: none; }
+  .guzheng .instrument-h { display: block; }
+}
+.guzheng .instrument-h { display: none; position: absolute; top: 24px; left: 50%; width: 88%; transform: translateX(-50%); pointer-events: none; }
 .wide { margin-bottom: 30px; }
 .exp { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .job { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; padding-block: 22px; border-bottom: 1px solid var(--line); }
@@ -594,23 +642,72 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
   <!-- OUTSIDE ENGINEERING -->
   <section class="proj" id="about">
     <div class="proj-head"><div><h2>Outside engineering</h2></div></div>
-    <div class="about">
-      <div class="text">
-        <p>I've played golf for about 10 years. I played varsity in high school (1st in district and regional runner-up in California, 4th in state in Florida) and have played in international junior tours. I love tennis too and played varsity tennis.</p>
-        <p>I also play the guzheng, a Chinese string instrument. I have the Central Conservatory of Music Level 8 (out of 9) certificate and have performed with the California Youth Chinese Symphony.</p>
-        <p>For community work, I taught weekly Scratch coding classes of about 30 kids with canCode, wrote a year-long ESL curriculum that the University of Alabama at Birmingham adopted, and was the student rep on our local Sierra Club board.</p>
-        <p class="sat">SAT: 1540</p>
+    <p class="life-intro">A few things I've stuck with for a long time.</p>
+    <div class="life">
+
+      <div class="golf">
+        <div>
+          <div class="kicker">Golf &amp; tennis</div>
+          <h3>About 10 years on the course</h3>
+          <p>I started golf as a little kid and played varsity all through high school. I've also played in international junior tours. Tennis is my other sport, and I played varsity tennis too.</p>
+          <div class="facts-row">
+            <span class="pill"><b>1st</b> District, CA</span>
+            <span class="pill"><b>Runner-up</b> Regionals, CA</span>
+            <span class="pill"><b>4th</b> State, FL</span>
+            <span class="pill"><b>Runner-up</b> SoCal PGA 2022 Players' Tour</span>
+            <span class="pill"><b>#2 seed</b> Varsity tennis</span>
+          </div>
+        </div>
+        <div class="snaps">
+          <figure class="snap kid">
+            <img src="golf-kid.jpg" alt="Joyce as a young kid holding a golf club on a driving range" width="500" height="771" loading="lazy">
+            <figcaption>where it started</figcaption>
+          </figure>
+          <figure class="snap yb">
+            <img src="golf-hs.jpg" alt="High school yearbook golf page, with Joyce circled in red lining up a shot" width="776" height="900" loading="lazy">
+            <figcaption>high school yearbook</figcaption>
+          </figure>
+        </div>
       </div>
-      <div class="hobby-pics">
+
+      <div class="guzheng">
+        <div class="strings"></div>
+        <img class="instrument" src="guzheng.png" alt="" width="224" height="1100">
+        <img class="instrument-h" src="guzheng-h.png" alt="" width="1100" height="224">
+        <div class="gz-body">
+          <div>
+            <div class="kicker">Guzheng 古筝</div>
+            <h3>21 strings and a lot of practice</h3>
+            <p>The guzheng is a Chinese zither: you tune it by sliding the bridges under each string, and pluck with picks taped to your fingers. I've played since I was young and earned the Central Conservatory of Music Level 8 certificate (out of 9). I've performed with the California Youth Chinese Symphony and at fundraisers for animal and environmental causes.</p>
+            <div class="facts-row">
+              <span class="pill"><b>Level 8</b> / 9 CCOM</span>
+              <span class="pill"><b>CYCS</b> performer</span>
+            </div>
+          </div>
+          <figure class="video">
+            <video controls playsinline preload="metadata" poster="guzheng-poster.jpg" src="guzheng.mp4"></video>
+            <figcaption>Me playing in 7th grade</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="community">
+        <div>
+          <div class="kicker">Community work</div>
+          <h3>Teaching what I know</h3>
+          <ul class="cw">
+            <li><b>canCode</b><span>Taught weekly Scratch coding classes to about 30 kids in underserved communities.</span></li>
+            <li><b>ESL curriculum, LingoX</b><span>Wrote a year-long ESL curriculum that the University of Alabama at Birmingham adopted for international students.</span></li>
+            <li><b>Sierra Club</b><span>Student representative on the board, and started sustainability projects at my school.</span></li>
+          </ul>
+          <p class="sat-line" style="margin-top:24px">SAT 1540</p>
+        </div>
         <figure>
-          <img src="golf-kid.jpg" alt="Joyce as a young kid holding a golf club on a driving range" width="500" height="771" loading="lazy">
-          <figcaption>Started young</figcaption>
-        </figure>
-        <figure>
-          <img src="golf-hs.jpg" alt="Joyce lining up a golf shot, from a high school yearbook page" width="190" height="630" loading="lazy">
-          <figcaption>High school varsity, from the yearbook</figcaption>
+          <img src="cancode.jpg" alt="Kids working on Scratch projects on laptops during a canCode class" width="750" height="1000" loading="lazy">
+          <figcaption>A canCode Scratch class</figcaption>
         </figure>
       </div>
+
     </div>
   </section>
 </main>
