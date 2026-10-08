@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Joyce Wang, Electrical Engineering at Georgia Tech. Projects in ASIC design, verification, and physical design.">
+<meta name="description" content="Joyce Wang, Electrical Engineering at Georgia Tech. Flex PCB, ASIC design, verification, and physical design projects.">
 <title>Joyce Wang Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -120,6 +120,16 @@ pre.code .k { color: var(--hl); }
 .diagram svg { display: block; width: 100%; min-width: 460px; height: auto; }
 .diagram svg text { font-family: var(--f-mono); }
 
+.wide { margin-bottom: 30px; }
+.exp { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.job { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; padding-block: 22px; border-bottom: 1px solid var(--line); }
+.job.has-photo { grid-template-columns: 170px minmax(0, 1fr) minmax(0, 300px); }
+.job .when { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); padding-top: 4px; font-variant-numeric: tabular-nums; }
+.job .what { display: grid; gap: 8px; align-content: start; max-width: 40em; min-width: 0; }
+.job h3 { font-size: 18px; font-stretch: 106%; font-weight: 700; }
+@media (max-width: 860px) {
+  .job, .job.has-photo { grid-template-columns: 1fr; }
+}
 footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
 @media (max-width: 860px) {
@@ -148,10 +158,11 @@ section[id] { scroll-margin-top: 64px; }
   <div class="wrap">
     <b>Joyce Wang</b>
     <nav aria-label="Projects">
-      <a href="#cpu">RISC-V CPU</a>
-      <a href="#asic">Calculator ASIC</a>
-      <a href="#suspension">Air Suspension</a>
-      <a href="#contact" class="hide-sm">Contact</a>
+      <a href="#flex">Flex PCB</a>
+      <a href="#cpu">CPU</a>
+      <a href="#asic">ASIC</a>
+      <a href="#suspension" class="hide-sm">Suspension</a>
+      <a href="#experience">Experience</a>
     </nav>
   </div>
 </header>
@@ -161,7 +172,7 @@ section[id] { scroll-margin-top: 64px; }
     <div>
       <div class="eyebrow">Electrical Engineering · Georgia Tech</div>
       <h1>Joyce<br><span>Wang</span></h1>
-      <p class="lede">I'm a third-year EE student. Most of my time outside class goes into chip design with Silicon Jackets, where I've worked on everything from RTL to layout. These are my main projects, with screenshots from the actual tools I used.</p>
+      <p class="lede">I'm a third-year EE student. Most of my time outside class goes into chip design with Silicon Jackets, where I've worked on everything from RTL to layout. I also do hands-on hardware: designing and assembling flexible PCBs for a wearable EMG project. Below are my main projects and experience, with photos and screenshots from the real work.</p>
       <div class="facts">
         <span><strong>GPA</strong> 4.0 / 4.0</span>
         <span><strong>Graduating</strong> May 2028</span>
@@ -184,14 +195,69 @@ section[id] { scroll-margin-top: 64px; }
         <span class="pad" style="left:0;top:28%;width:10px;height:6px"></span>
         <span class="pad" style="left:0;top:68%;width:10px;height:6px"></span>
         <span class="pad" style="right:0;top:40%;width:10px;height:6px"></span>
-        <a class="blk" href="#cpu" style="left:8%;top:9%;width:50%;height:38%"><span><em>u_cpu</em>RISC-V CPU</span></a>
-        <a class="blk sram" href="#asic" style="left:62%;top:9%;width:30%;height:56%"><span><em>u_asic</em>64-bit calc ASIC</span></a>
-        <a class="blk" href="#suspension" style="left:8%;top:51%;width:50%;height:40%"><span><em>u_research</em>Air suspension</span></a>
-        <a class="blk" href="#contact" style="left:62%;top:69%;width:30%;height:22%"><span><em>u_io</em>Contact</span></a>
+        <a class="blk" href="#flex" style="left:8%;top:9%;width:50%;height:28%"><span><em>u_flex</em>EMG flex PCB</span></a>
+        <a class="blk" href="#cpu" style="left:8%;top:41%;width:50%;height:22%"><span><em>u_cpu</em>RISC-V CPU</span></a>
+        <a class="blk sram" href="#asic" style="left:62%;top:9%;width:30%;height:46%"><span><em>u_asic</em>64-bit calc ASIC</span></a>
+        <a class="blk" href="#suspension" style="left:8%;top:67%;width:50%;height:24%"><span><em>u_research</em>Air suspension</span></a>
+        <a class="blk" href="#experience" style="left:62%;top:59%;width:30%;height:32%"><span><em>u_exp</em>Experience</span></a>
       </div>
       <div class="die-cap">floorplan.def · click a block</div>
     </div>
   </div>
+
+  <!-- FLEX PCB -->
+  <section class="proj" id="flex">
+    <div class="proj-head">
+      <div>
+        <h2>Wearable EMG Flex PCB</h2>
+        <div class="meta">Mechatronics &amp; Motivation Lab (VIP), Georgia Tech · Jan 2026 to May 2026</div>
+      </div>
+      <div class="tags"><span class="tag">Altium</span><span class="tag">Flex PCB</span><span class="tag">BGA rework</span><span class="tag">Mixed-signal</span></div>
+    </div>
+
+    <div class="specs">
+      <div class="spec"><div class="v">2-layer</div><div class="k">flexible Kapton PCB</div></div>
+      <div class="spec"><div class="v">3.3 V / 1.8 V</div><div class="k">isolated analog and digital supplies</div></div>
+      <div class="spec"><div class="v">16-bit</div><div class="k">differential ADC</div></div>
+      <div class="spec"><div class="v">3</div><div class="k">prototypes assembled and reworked</div></div>
+    </div>
+
+    <figure class="wide">
+      <img src="flex-strip.jpg" alt="Long flexible orange PCB with six electrode pads and a soldered Bluetooth module at one end" width="1440" height="378">
+      <figcaption>The assembled board. The orange pads are the electrodes that sit on the skin, and the module on the tab is the Bluetooth chip.</figcaption>
+    </figure>
+
+    <div class="part">
+      <div class="text">
+        <h3><span class="n">Design</span>What the board does</h3>
+        <p>It's a thin, bendable board that sits on the arm, reads muscle signals (EMG) through the electrode pads, and streams the data over Bluetooth to a phone app. I did the schematic and the 2-layer flex layout in Altium.</p>
+        <ul>
+          <li>Separate 3.3 V analog (AVDD) and 1.8 V digital (DVDD) supplies, each from its own LDO, so digital noise stays out of the sensor signal</li>
+          <li>A 16-bit differential ADC to pick up the small EMG voltages</li>
+          <li>A BLE microcontroller on a tab at the end of the strip</li>
+          <li>Wavy (serpentine) traces near the chips so the copper can flex without cracking</li>
+        </ul>
+        <h3><span class="n">Assembly</span>Soldering a chip onto a flexible board</h3>
+        <p>Flex boards are harder to solder than normal ones because they bend and can warp under heat. I hand-assembled and reworked 3 prototypes under a stereo microscope:</p>
+        <ul>
+          <li>Put flux on the fine-pitch pads and checked the coverage under the scope</li>
+          <li>Placed the BGA chip with tweezers, then reflowed it with a hot-air gun moving in slow circles</li>
+          <li>As the solder melts, surface tension pulls the chip onto its pads by itself, so placement only has to be close</li>
+        </ul>
+        <p>I also wrote up the whole process as a step-by-step guide so the rest of the team could assemble boards too.</p>
+      </div>
+      <div class="figs two">
+        <figure>
+          <img src="flex-rework.jpg" alt="Joyce at a stereo microscope using a hot air rework gun on a flex PCB" width="766" height="1100" loading="lazy">
+          <figcaption>Reworking a board with hot air under the microscope</figcaption>
+        </figure>
+        <figure>
+          <img src="flex-closeup.jpg" alt="Close-up of the bare flex PCB showing the BGA pad array, fine-pitch footprints and copper traces" width="1279" height="1066" loading="lazy">
+          <figcaption>Bare board up close. The pad grid on the tab is where the Bluetooth chip goes, next to the fine-pitch ADC footprints.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
   <!-- CPU -->
   <section class="proj" id="cpu">
@@ -410,10 +476,74 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
         <h3>Awards</h3>
         <p>Yale Science &amp; Engineering Association, NOAA, the Office of Naval Research, and Iowa State University.</p>
       </div>
-      <figure style="max-width:420px">
-        <img src="poster.jpg" alt="Trifold poster titled Renewable Energy Air Suspension System at a science fair" width="510" height="680" loading="lazy">
-        <figcaption>My board at the 2024 State Science and Technology Fair of Iowa</figcaption>
-      </figure>
+      <div class="figs">
+        <figure>
+          <img src="susp-concept.jpg" alt="Slide titled Electricity generation working principles showing shock absorber, hydraulic jets, Pelton wheels, generators, charge controller and battery" width="1400" height="803" loading="lazy">
+          <figcaption>Concept slide from my presentation, showing a version with hydraulic jets and turbine wheels. Each wheel turns a generator, and a charge controller stores the power in the battery.</figcaption>
+        </figure>
+        <div class="figs two">
+          <figure>
+            <img src="susp-sketch.jpg" alt="Sketch of a shock absorber cylinder with a hydraulic bypass loop through a rotor, with red and blue flow arrows" width="542" height="900" loading="lazy">
+            <figcaption>My sketch of the bypass. Check valves send the oil the same way through the rotor whether the piston goes up (red) or down (blue).</figcaption>
+          </figure>
+          <figure>
+            <img src="poster.jpg" alt="Trifold poster titled Renewable Energy Air Suspension System at a science fair" width="510" height="680" loading="lazy">
+            <figcaption>My board at the 2024 State Science and Technology Fair of Iowa</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="proj" id="experience">
+    <div class="proj-head">
+      <div>
+        <h2>Experience</h2>
+        <div class="meta">Research, engineering teams, and an internship</div>
+      </div>
+    </div>
+    <div class="exp">
+      <article class="job">
+        <div class="when">Jan 2026 to now</div>
+        <div class="what">
+          <h3>ASIC Physical Design Engineer · Silicon Jackets</h3>
+          <p>Georgia Tech's chip design team. I run RTL-to-GDS flows in Cadence Innovus, close timing, fix DRCs, and write Python and Tcl scripts to speed up the flow. See the <a href="#asic">calculator ASIC</a> and <a href="#cpu">RISC-V CPU</a> above.</p>
+        </div>
+      </article>
+      <article class="job">
+        <div class="when">Dec 2025 to now</div>
+        <div class="what">
+          <h3>Research Assistant · GAMMA Research Group, Georgia Tech</h3>
+          <p>I built a MATLAB surrogate optimization pipeline that sizes OTA circuits (a type of amplifier). It reached the same best design as brute-force search with <b>5x fewer circuit evaluations</b> (500 vs. 2,511) and about <b>8x less runtime</b> (3 min vs. 25 min).</p>
+          <p>I also found a bug in the figure-of-merit formula that kept pushing the optimizer toward designs that weren't physically valid, confirmed it across both sweeps, and flagged it so it could be fixed.</p>
+        </div>
+      </article>
+      <article class="job">
+        <div class="when">Jan 2026 to May 2026</div>
+        <div class="what">
+          <h3>Student Researcher · Mechatronics &amp; Motivation Lab, Georgia Tech</h3>
+          <p>Designed and assembled the wearable EMG flex PCB. Details in the <a href="#flex">flex PCB section</a> above.</p>
+        </div>
+      </article>
+      <article class="job">
+        <div class="when">Summer 2024</div>
+        <div class="what">
+          <h3>R&amp;D Intern Engineer · Shanghai ZhiCheng Software Co.</h3>
+          <p>Wrote embedded control software that reads 5 live vehicle inputs (chassis height, speed, brake, throttle, steering) and drives an air pump to hold chassis height within <b>±5 mm</b> across 4 driving conditions. I also built a Bluetooth app that shows the live data for diagnostics, and the software got a copyright.</p>
+        </div>
+      </article>
+      <article class="job has-photo">
+        <div class="when">Jun 2023 to Jun 2024</div>
+        <div class="what">
+          <h3>Technical Lead · NASA Student Launch</h3>
+          <p>Led payload design, integration, and flight-readiness testing for a high-power rocket with dual deployment (two parachute events). It flew to about <b>1 mile</b>, and we qualified out of a national pool of 1,000+ teams.</p>
+        </div>
+        <figure>
+          <img src="nasa-launch.jpg" alt="Team members assembling a red, white and black high-power rocket on a folding table at a launch field" width="1300" height="1111" loading="lazy">
+          <figcaption>Getting the rocket ready on launch day</figcaption>
+        </figure>
+      </article>
     </div>
   </section>
 </main>
