@@ -120,6 +120,17 @@ pre.code .k { color: var(--hl); }
 .diagram svg { display: block; width: 100%; min-width: 460px; height: auto; }
 .diagram svg text { font-family: var(--f-mono); }
 
+.awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
+.awards h3 { font-size: 17px; font-stretch: 106%; font-weight: 700; margin-bottom: 10px; }
+.awards ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 15px; }
+.about { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 36px; align-items: start; }
+.about .sat { font-family: var(--f-mono); font-size: 14px; color: var(--muted); }
+.hobby-pics { display: flex; gap: 14px; align-items: flex-start; }
+.hobby-pics figure { width: 150px; }
+.hobby-pics img { height: 220px; width: 100%; object-fit: cover; object-position: top; }
+@media (max-width: 860px) {
+  .awards, .about { grid-template-columns: 1fr; }
+}
 .wide { margin-bottom: 30px; }
 .exp { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .job { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; padding-block: 22px; border-bottom: 1px solid var(--line); }
@@ -544,6 +555,62 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
           <figcaption>Getting the rocket ready on launch day</figcaption>
         </figure>
       </article>
+    </div>
+  </section>
+
+  <!-- AWARDS -->
+  <section class="proj" id="awards">
+    <div class="proj-head"><div><h2>Awards</h2></div></div>
+    <div class="awards">
+      <div>
+        <h3>Research and science fairs</h3>
+        <ul>
+          <li>Genius Olympiad International Finalist and Honorable Mention, $14,000 scholarship</li>
+          <li>Most Outstanding Exhibit in STEM, Yale Science &amp; Engineering Association</li>
+          <li>Iowa State Science Fair: 2nd place, Energy &amp; Transportation</li>
+          <li>Iowa State University College of Engineering $1,000 scholarship</li>
+          <li>Bosch Motorsport "High Tech for High Speed" Special Award</li>
+          <li>ISU Excellence in Environmental Health &amp; Safety Award</li>
+          <li>NOAA 2024 Taking the Pulse of the Planet Award</li>
+          <li>Naval Science Award, Office of Naval Research</li>
+          <li>EISEF Regional Finalist, Class 1 Award, and Exceptional Genius Award</li>
+          <li>Local science fair: 3rd place, Senior Physical</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Academic and other</h3>
+        <ul>
+          <li>IEEE Eta Kappa Nu (HKN) member</li>
+          <li>Salutatorian</li>
+          <li>Presidential Scholar Nominee</li>
+          <li>National Honor Society</li>
+          <li>FBLA State: 2nd in UX Design, 3rd in Visual Design</li>
+          <li>Southern California PGA 2022 Individuals Players' Tour, Runner-Up</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTSIDE ENGINEERING -->
+  <section class="proj" id="about">
+    <div class="proj-head"><div><h2>Outside engineering</h2></div></div>
+    <div class="about">
+      <div class="text">
+        <p>I've played golf for about 10 years. I played varsity in high school (1st in district and regional runner-up in California, 4th in state in Florida) and have played in international junior tours. I love tennis too and played varsity tennis.</p>
+        <p>I also play the guzheng, a Chinese string instrument. I have the Central Conservatory of Music Level 8 (out of 9) certificate and have performed with the California Youth Chinese Symphony.</p>
+        <p>For community work, I taught weekly Scratch coding classes of about 30 kids with canCode, wrote a year-long ESL curriculum that the University of Alabama at Birmingham adopted, and was the student rep on our local Sierra Club board.</p>
+        <p class="sat">SAT: 1540</p>
+      </div>
+      <div class="hobby-pics">
+        <figure>
+          <img src="golf-kid.jpg" alt="Joyce as a young kid holding a golf club on a driving range" width="500" height="771" loading="lazy">
+          <figcaption>Started young</figcaption>
+        </figure>
+        <figure>
+          <img src="golf-hs.jpg" alt="Joyce lining up a golf shot, from a high school yearbook page" width="190" height="630" loading="lazy">
+          <figcaption>High school varsity, from the yearbook</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 </main>
