@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Joyce Wang, Electrical Engineering at Georgia Tech. Projects in ASIC design, verification, and physical design.">
+<title>Joyce Wang Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a chip "die" header, then one long column per project with a spec strip, prose on the left, tool screenshots on the right. Colors borrow from Innovus metal layers. */
+:root {
+  --bg: #F4F5F8;
+  --surface: #FFFFFF;
+  --fg: #121722;
+  --muted: #59627A;
+  --line: #D8DCE6;
+  --accent: #2A47D1;      /* metal-1 blue */
+  --accent-soft: #E3E8FB;
+  --hl: #E2B93B;          /* routing yellow */
+  --code-bg: #141925;
+  --code-fg: #E4E7EE;
+  --code-dim: #8796B5;
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C0F16; --surface: #141925; --fg: #E6E9F0; --muted: #98A2B8; --line: #262D3D;
+    --accent: #8A9EFF; --accent-soft: #1C2442; --hl: #E8C455;
+    --code-bg: #080A10; --code-fg: #E4E7EE; --code-dim: #7D8BA8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C0F16; --surface: #141925; --fg: #E6E9F0; --muted: #98A2B8; --line: #262D3D;
+  --accent: #8A9EFF; --accent-soft: #1C2442; --hl: #E8C455;
+  --code-bg: #080A10; --code-fg: #E4E7EE; --code-dim: #7D8BA8;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.6; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-block: 10px; }
+.bar b { font-family: var(--f-display); font-stretch: 112%; font-weight: 800; font-size: 15px; letter-spacing: .01em; }
+.bar nav { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+.bar nav a { color: var(--muted); text-decoration: none; }
+.bar nav a:hover { color: var(--fg); }
+
+/* hero */
+.hero > div { min-width: 0; }
+.hero { padding-block: 56px 40px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; align-items: center; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.hero h1 { font-size: clamp(48px, 9vw, 96px); font-stretch: 118%; font-weight: 900; line-height: .92; letter-spacing: -.01em; margin-block: 14px 18px; }
+.hero h1 span { color: var(--accent); }
+.hero .lede { font-size: 18px; max-width: 34em; color: var(--fg); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; font-size: 14px; color: var(--muted); }
+.facts strong { color: var(--fg); font-weight: 600; }
+.contact { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; color: var(--fg); text-decoration: none; }
+.chip button { font: inherit; font-size: 12px; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+.chip .addr { user-select: all; }
+
+/* die graphic */
+.die { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border: 2px solid var(--fg); border-radius: 4px; background:
+  repeating-linear-gradient(90deg, transparent 0 13px, color-mix(in srgb, var(--accent) 22%, transparent) 13px 14px),
+  repeating-linear-gradient(0deg, transparent 0 17px, color-mix(in srgb, var(--hl) 26%, transparent) 17px 18px),
+  var(--surface); overflow: hidden; }
+.die .pad { position: absolute; background: var(--fg); }
+.die .blk { position: absolute; border: 1.5px solid var(--fg); background: color-mix(in srgb, var(--surface) 82%, transparent); display: flex; align-items: flex-end; padding: 8px 10px; font-family: var(--f-mono); font-size: 11px; line-height: 1.3; color: var(--fg); text-decoration: none; transition: background .2s; }
+.die .blk:hover { background: var(--accent-soft); }
+.die .blk em { font-style: normal; color: var(--muted); display: block; }
+.die .sram { background: color-mix(in srgb, var(--accent) 30%, var(--surface)); }
+.die-cap { margin-top: 10px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
+
+/* project sections */
+section.proj { border-top: 1px solid var(--line); padding-block: 56px; }
+.proj-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 24px; margin-bottom: 26px; }
+.proj-head h2 { font-size: clamp(30px, 5vw, 46px); font-stretch: 112%; font-weight: 800; line-height: 1.02; }
+.proj-head .meta { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-family: var(--f-mono); font-size: 11.5px; padding: 3px 8px; border-radius: 3px; background: var(--accent-soft); color: var(--fg); }
+.status { font-family: var(--f-mono); font-size: 11.5px; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--hl); color: var(--fg); }
+
+.specs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 6px; background: var(--surface); margin-bottom: 30px; }
+.specs.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.spec { padding: 14px 18px; border-left: 1px solid var(--line); min-width: 0; }
+.spec:first-child { border-left: 0; }
+.spec .v { font-family: var(--f-display); font-stretch: 108%; font-weight: 800; font-size: clamp(20px, 2.6vw, 28px); line-height: 1.15; font-variant-numeric: tabular-nums; }
+.spec .k { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+.part { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 36px; align-items: start; margin-top: 36px; }
+.part:first-of-type { margin-top: 0; }
+.text { display: grid; gap: 12px; max-width: 34em; min-width: 0; }
+.text h3 { font-size: 20px; font-stretch: 106%; font-weight: 700; margin-top: 6px; }
+.text h3 .n { font-family: var(--f-mono); font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 2px; text-transform: uppercase; }
+.text ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.text code { font-family: var(--f-mono); font-size: .86em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+.figs { display: grid; gap: 22px; min-width: 0; }
+.figs.two { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); align-items: start; }
+figure { margin: 0; min-width: 0; }
+figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 7px; line-height: 1.45; }
+pre.code { margin: 0; background: var(--code-bg); color: var(--code-fg); font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; padding: 16px 18px; border-radius: 6px; overflow-x: auto; }
+pre.code .c { color: var(--code-dim); }
+pre.code .k { color: var(--hl); }
+
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 460px; height: auto; }
+.diagram svg text { font-family: var(--f-mono); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding-block: 36px 28px; gap: 32px; }
+  .die { max-width: min(420px, 100%); }
+  .part, .figs.two { grid-template-columns: 1fr; }
+  .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .specs .spec:nth-child(3) { border-left: 0; }
+  .specs .spec:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .specs.three { grid-template-columns: 1fr; }
+  .specs.three .spec { border-left: 0; border-top: 1px solid var(--line); }
+  .specs.three .spec:first-child { border-top: 0; }
+}
+@media (max-width: 520px) {
+  .bar nav { gap: 12px; font-size: 13px; }
+  .bar nav .hide-sm { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 64px; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <b>Joyce Wang</b>
+    <nav aria-label="Projects">
+      <a href="#cpu">RISC-V CPU</a>
+      <a href="#asic">Calculator ASIC</a>
+      <a href="#suspension">Air Suspension</a>
+      <a href="#contact" class="hide-sm">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Electrical Engineering · Georgia Tech</div>
+      <h1>Joyce<br><span>Wang</span></h1>
+      <p class="lede">I'm a third-year EE student. Most of my time outside class goes into chip design with Silicon Jackets, where I've worked on everything from RTL to layout. These are my main projects, with screenshots from the actual tools I used.</p>
+      <div class="facts">
+        <span><strong>GPA</strong> 4.0 / 4.0</span>
+        <span><strong>Graduating</strong> May 2028</span>
+        <span><strong>Work authorization</strong> U.S. Permanent Resident</span>
+      </div>
+      <div class="contact" id="contact">
+        <span class="chip"><span class="addr" id="email">joycewang1911@gmail.com</span><button type="button" id="copy-email" aria-label="Copy email address">Copy</button></span>
+        <span class="chip"><span class="addr">(949) 418-2613</span></span>
+        <a class="chip" href="https://www.linkedin.com/in/9yceee" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+    <div>
+      <div class="die" role="navigation" aria-label="Project map">
+        <span class="pad" style="left:8%;top:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:30%;top:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:52%;top:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:74%;top:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:20%;bottom:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:62%;bottom:0;width:6px;height:10px"></span>
+        <span class="pad" style="left:0;top:28%;width:10px;height:6px"></span>
+        <span class="pad" style="left:0;top:68%;width:10px;height:6px"></span>
+        <span class="pad" style="right:0;top:40%;width:10px;height:6px"></span>
+        <a class="blk" href="#cpu" style="left:8%;top:9%;width:50%;height:38%"><span><em>u_cpu</em>RISC-V CPU</span></a>
+        <a class="blk sram" href="#asic" style="left:62%;top:9%;width:30%;height:56%"><span><em>u_asic</em>64-bit calc ASIC</span></a>
+        <a class="blk" href="#suspension" style="left:8%;top:51%;width:50%;height:40%"><span><em>u_research</em>Air suspension</span></a>
+        <a class="blk" href="#contact" style="left:62%;top:69%;width:30%;height:22%"><span><em>u_io</em>Contact</span></a>
+      </div>
+      <div class="die-cap">floorplan.def · click a block</div>
+    </div>
+  </div>
+
+  <!-- CPU -->
+  <section class="proj" id="cpu">
+    <div class="proj-head">
+      <div>
+        <h2>RISC-V (RV32I) Single-Core CPU</h2>
+        <div class="meta">Silicon Jackets · Sep 2026 to now</div>
+      </div>
+      <div class="tags"><span class="status">In progress</span><span class="tag">SystemVerilog</span><span class="tag">RTL-to-GDS</span></div>
+    </div>
+    <div class="part">
+      <div class="text">
+        <p>A small RISC-V CPU I'm designing and verifying in SystemVerilog. It runs a subset of the RV32I instruction set and takes 3 cycles per instruction: fetch, decode, and execute. I'm also taking it through the physical design flow so it ends up as an actual layout.</p>
+        <h3>What I'm working on</h3>
+        <ul>
+          <li>The fetch, decode, and execute logic and the control that steps through them</li>
+          <li>Connecting the core to the SRAM and memory controller interfaces we were given</li>
+          <li>Testing each instruction in simulation as I add it</li>
+          <li>Setting up the RTL-to-GDS flow for the core</li>
+        </ul>
+        <h3>Instructions it supports</h3>
+        <p class="mono" style="font-size:14px">addi · add · sub · lw · sw · beq · sll · srl · ebreak</p>
+        <p>I'm keeping the instruction set small at first so I can get the whole flow working end to end, then add more.</p>
+      </div>
+      <figure>
+        <div class="diagram">
+          <svg viewBox="0 0 560 330" role="img" aria-label="Block diagram: fetch, decode and execute stages connected to a memory controller and SRAM">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--fg)"/></marker>
+            </defs>
+            <path d="M470 60 V30 H90 V58" fill="none" stroke="var(--muted)" stroke-dasharray="4 3" stroke-width="1.4" marker-end="url(#ah)"/>
+            <text x="280" y="24" text-anchor="middle" font-size="11" fill="var(--muted)">next PC</text>
+            <g font-size="11" fill="var(--fg)">
+              <rect x="20" y="60" width="140" height="96" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+              <text x="90" y="84" text-anchor="middle" font-weight="600" font-size="14">Fetch</text>
+              <text x="90" y="106" text-anchor="middle" fill="var(--muted)">PC</text>
+              <text x="90" y="122" text-anchor="middle" fill="var(--muted)">read instruction</text>
+              <text x="90" y="138" text-anchor="middle" fill="var(--muted)">PC+4 / branch</text>
+              <rect x="210" y="60" width="140" height="96" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+              <text x="280" y="84" text-anchor="middle" font-weight="600" font-size="14">Decode</text>
+              <text x="280" y="106" text-anchor="middle" fill="var(--muted)">opcode, funct3/7</text>
+              <text x="280" y="122" text-anchor="middle" fill="var(--muted)">register read</text>
+              <text x="280" y="138" text-anchor="middle" fill="var(--muted)">immediate</text>
+              <rect x="400" y="60" width="140" height="96" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+              <text x="470" y="84" text-anchor="middle" font-weight="600" font-size="14">Execute</text>
+              <text x="470" y="106" text-anchor="middle" fill="var(--muted)">ALU add/sub/shift</text>
+              <text x="470" y="122" text-anchor="middle" fill="var(--muted)">beq compare</text>
+              <text x="470" y="138" text-anchor="middle" fill="var(--muted)">load/store, WB</text>
+            </g>
+            <line x1="160" y1="108" x2="208" y2="108" stroke="var(--fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+            <line x1="350" y1="108" x2="398" y2="108" stroke="var(--fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+            <line x1="90" y1="156" x2="200" y2="206" stroke="var(--fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+            <line x1="470" y1="156" x2="360" y2="206" stroke="var(--fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+            <text x="112" y="196" font-size="11" fill="var(--muted)">fetch</text>
+            <text x="448" y="196" font-size="11" fill="var(--muted)" text-anchor="end">lw / sw</text>
+            <rect x="170" y="208" width="220" height="44" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+            <text x="280" y="235" text-anchor="middle" font-size="13" font-weight="600" fill="var(--fg)">Memory controller</text>
+            <line x1="280" y1="252" x2="280" y2="270" stroke="var(--fg)" stroke-width="1.5" marker-end="url(#ah)"/>
+            <rect x="170" y="272" width="220" height="44" rx="5" fill="var(--accent)" stroke="var(--fg)" stroke-width="1.5"/>
+            <text x="280" y="299" text-anchor="middle" font-size="13" font-weight="600" fill="var(--bg)">SRAM</text>
+          </svg>
+        </div>
+        <figcaption>Simplified block diagram I drew. I'll add simulation and layout screenshots as the project moves along.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ASIC -->
+  <section class="proj" id="asic">
+    <div class="proj-head">
+      <div>
+        <h2>64-Bit Calculator ASIC</h2>
+        <div class="meta">Silicon Jackets · Dec 2025 to Mar 2026 · with Kevin</div>
+      </div>
+      <div class="tags"><span class="tag">SystemVerilog</span><span class="tag">UVM</span><span class="tag">Cadence Innovus</span><span class="tag">Python</span></div>
+    </div>
+
+    <div class="specs">
+      <div class="spec"><div class="v">1,000+ → 0</div><div class="k">DRC violations</div></div>
+      <div class="spec"><div class="v">−2.709 → +0.01</div><div class="k">setup WNS (ns)</div></div>
+      <div class="spec"><div class="v">99.82%</div><div class="k">functional coverage</div></div>
+      <div class="spec"><div class="v">100%</div><div class="k">SVA pass rate</div></div>
+    </div>
+
+    <div class="part">
+      <div class="text">
+        <h3><span class="n">Digital design</span>How it works</h3>
+        <p>The chip reads pairs of 64-bit numbers out of SRAM, adds them with a 32-bit adder in two passes, and writes the 64-bit result back. I took it all the way from RTL to a routed layout.</p>
+        <ul>
+          <li><b>Controller:</b> a 7-state FSM (IDLE, READ, READ2, ADD, ADD2, WRITE, END) that walks through memory with read and write pointers</li>
+          <li><b>Adder:</b> 32-bit ripple carry built from full adders in a <code>generate</code> loop. The low half goes first and its carry feeds the high half</li>
+          <li><b>Result buffer:</b> holds the low and high halves until the full 64 bits are ready to write</li>
+          <li><b>Memory:</b> two CF_SRAM_1024x32 macros, one for each 32-bit half</li>
+        </ul>
+        <p>One bug I hit: in the ADD state I had to use the SRAM output <code>r_data[31:0]</code> directly, because the register I meant to use wasn't updated yet that cycle. It made me a lot more careful about which cycle a value is actually valid in.</p>
+      </div>
+      <div class="figs two">
+        <figure>
+          <img src="fsm.jpg" alt="Hand-drawn FSM diagram with states IDLE, READ, READ2, ADD, ADD2, WRITE and END" width="630" height="900" loading="lazy">
+          <figcaption>My FSM sketch from the design notes</figcaption>
+        </figure>
+        <figure>
+<pre class="code"><span class="k">logic</span> [DATA_W:0] carry;
+<span class="k">assign</span> carry[0] = c_i;
+
+<span class="k">generate</span>
+  genvar i;
+  for (i = 0; i &lt; DATA_W; i++)
+  begin : adder_chain
+    full_adder fa_bit (
+      .a   (a_i[i]),
+      .b   (b_i[i]),
+      .cin (carry[i]),
+      .s   (sum_o[i]),
+      .cout(carry[i+1]));
+  end
+<span class="k">endgenerate</span>
+
+<span class="k">assign</span> c_o = carry[DATA_W];</pre>
+          <figcaption>adder32.sv, the ripple-carry chain</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="part" style="grid-template-columns:1fr">
+      <figure>
+        <img src="wave.jpg" alt="SimVision waveform showing the controller cycling through its states while the read and write pointers increment" width="1900" height="634" loading="lazy">
+        <figcaption>SimVision waveform: the FSM cycling READ, READ2, ADD, ADD2, WRITE while the pointers step through memory</figcaption>
+      </figure>
+    </div>
+
+    <div class="part">
+      <div class="text">
+        <h3><span class="n">Verification</span>Testbench and coverage</h3>
+        <p>I built a UVM-style testbench from scratch: sequence item, sequencer, driver, monitor, and scoreboard, all connected to the design through an interface. The scoreboard checks every result the chip writes back against the expected sum.</p>
+        <p>I also wrote assertions for the things that are easy to break, like the carry making it from the low half to the high half, the halves being written in the right order, and reset behavior.</p>
+        <p>In Cadence IMC, FSM and toggle coverage both came out at 100%. One code block never gets hit, which is why the overall number is 99.82%.</p>
+      </div>
+      <div class="figs">
+        <figure>
+          <img src="coverage.jpg" alt="Cadence IMC coverage report showing 99.82 percent overall coverage for my_calc" width="1536" height="965" loading="lazy">
+          <figcaption>IMC coverage for my_calc: 99.82% overall, 100% FSM (14/14) and toggle (1281/1281)</figcaption>
+        </figure>
+<pre class="code"><span class="c">// carry from the low half has to survive into ADD2</span>
+assert_carry_prop: <span class="k">assert property</span> (
+  @(posedge clk) disable iff (rst)
+  (state == S_ADD2) |-&gt;
+    (my_calc.u_ctrl.carry_reg == $past(my_calc.u_ctrl.carry_reg))
+) else $error("Carry bit changed/lost during S_ADD2.");</pre>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="text">
+        <h3><span class="n">Physical design</span>Getting to zero DRCs</h3>
+        <p>I ran the full RTL-to-GDS flow in Innovus: floorplan, placement, clock tree synthesis, and routing. The design I started with had over 1,000 DRC violations.</p>
+        <p>I went through the SRAM LEF obstructions to figure out where routing wasn't allowed around the macros, then fixed it step by step:</p>
+        <ul>
+          <li>15-unit placement halos around the SRAMs</li>
+          <li>routing blockages on MET1 to MET3 over the macros</li>
+          <li>opening up more metal layers for routing</li>
+        </ul>
+        <p>That got it to zero. Setup timing went from −2.709 ns to +0.01 ns and hold from −0.032 ns to 0.</p>
+        <p>I also wrote a Python script that reads the timing report, counts the failing paths (50), and finds the average gate depth (about 6). Plus some Tcl procs to highlight the SRAMs and critical paths in the GUI.</p>
+      </div>
+      <div class="figs">
+        <div class="figs two">
+          <figure>
+            <img src="layout-before.jpg" alt="Innovus layout covered in DRC violation markers" width="637" height="680" loading="lazy">
+            <figcaption>Before: DRC markers all over the routed design</figcaption>
+          </figure>
+          <figure>
+            <img src="layout-after.jpg" alt="Innovus window with an empty violation browser next to the clean layout" width="955" height="527" loading="lazy">
+            <figcaption>After: the violation browser is empty</figcaption>
+          </figure>
+        </div>
+<pre class="code"><span class="c"># grab slack and depth for each path</span>
+<span class="k">elif</span> "slack" <span class="k">in</span> line:
+    path_info["slack"] = float(line.split()[-1])
+    path_info["depth"] = len(gates)
+    paths.append(path_info)
+
+<span class="c"># count the failing paths</span>
+violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <span class="k">if</span> p["slack"] &lt; 0)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Suspension -->
+  <section class="proj" id="suspension">
+    <div class="proj-head">
+      <div>
+        <h2>Renewable Energy Air Suspension System</h2>
+        <div class="meta">Independent research · Jun 2023 to Apr 2024</div>
+      </div>
+      <div class="tags"><span class="tag">Mechanical design</span><span class="tag">Simulation</span><span class="tag">Bluetooth app</span></div>
+    </div>
+
+    <div class="specs three">
+      <div class="spec"><div class="v">~6.8%</div><div class="k">estimated extra EV range</div></div>
+      <div class="spec"><div class="v">35 pages</div><div class="k">research paper I wrote</div></div>
+      <div class="spec"><div class="v">2nd place</div><div class="k">2024 Iowa State Science Fair</div></div>
+    </div>
+
+    <div class="part">
+      <div class="text">
+        <p>Cars bounce all the time, and shock absorbers just turn that motion into heat. I wanted to see if an EV could get some of that energy back as electricity, so I designed a suspension system to do it.</p>
+        <h3>How it works</h3>
+        <ul>
+          <li>A hydraulic bypass with check valves sends fluid one way through a vane motor, so it spins whether the shock is compressing or extending</li>
+          <li>The vane motor drives a generator that charges the battery</li>
+          <li>I ran calculations and simulations on the energy conversion and estimated about 6.8% more driving range</li>
+        </ul>
+        <h3>The app</h3>
+        <p>I also built a Bluetooth app to monitor and control the system in real time: vehicle height, suspension settings, and a "GreenPower" mode that turns regeneration on. The app interface is copyrighted.</p>
+        <h3>Awards</h3>
+        <p>Yale Science &amp; Engineering Association, NOAA, the Office of Naval Research, and Iowa State University.</p>
+      </div>
+      <figure style="max-width:420px">
+        <img src="poster.jpg" alt="Trifold poster titled Renewable Energy Air Suspension System at a science fair" width="510" height="680" loading="lazy">
+        <figcaption>My board at the 2024 State Science and Technology Fair of Iowa</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>Joyce (Jiusi) Wang · Georgia Tech Electrical Engineering</span>
+  <span>Also on <a href="https://www.linkedin.com/in/9yceee" target="_blank" rel="noopener">LinkedIn</a></span>
+</footer>
+
+<script>
+document.getElementById('copy-email').addEventListener('click', async (e) => {
+  const btn = e.currentTarget, text = document.getElementById('email').textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; }
+  catch (err) {
+    const r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected';
+  }
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+});
+</script>
+</body>
+</html>
