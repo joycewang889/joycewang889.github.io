@@ -127,6 +127,30 @@ pre.code .k { color: var(--hl); }
 .diagram svg { display: block; width: 100%; min-width: 460px; height: auto; }
 .diagram svg text { font-family: var(--f-mono); }
 
+/* EMG block diagram */
+.emg-dia svg text { font-family: var(--f-body); }
+.emg-dia .t-b { font-size: 14px; font-weight: 600; fill: var(--fg); }
+.emg-dia .t-s { font-size: 12px; fill: var(--fg); }
+.emg-dia .t-sm { font-size: 11px; }
+.emg-dia .t-dom { font-size: 13px; font-weight: 600; }
+.emg-dia .f-fg { fill: var(--fg); }
+.emg-dia .f-mut { fill: var(--muted); }
+.emg-dia .f-kap { fill: #B97A12; }
+.emg-dia .f-acc { fill: var(--accent); }
+.emg-dia .box { fill: var(--surface); stroke: var(--fg); stroke-width: 1.3; }
+.emg-dia .box.thick { stroke-width: 1.8; }
+.emg-dia .box.s-kap { stroke: #B97A12; stroke-width: 2; }
+.emg-dia .box.s-acc { stroke: var(--accent); stroke-width: 2; }
+.emg-dia .outline { fill: none; stroke: var(--gray); stroke-dasharray: 5 4; }
+.emg-dia .dom-a { fill: color-mix(in srgb, #D9971E 15%, var(--surface)); }
+.emg-dia .dom-d { fill: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.emg-dia .dash { stroke: var(--fg); stroke-dasharray: 3 3; }
+.emg-dia .wire { fill: none; stroke: var(--fg); stroke-width: 1.6; }
+.emg-dia .wire.thin { stroke-width: 1.3; }
+.emg-dia .wire.dashed { stroke-dasharray: 4 4; }
+.emg-dia .rail-a { stroke: #B97A12; stroke-width: 2; }
+.emg-dia .rail-d { stroke: var(--accent); stroke-width: 2; }
+
 .awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
 .awards h3 { font-size: 17px; font-stretch: 106%; font-weight: 700; margin-bottom: 10px; }
 .awards ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 15px; }
@@ -277,45 +301,133 @@ section[id] { scroll-margin-top: 64px; }
     </div>
 
     <div class="specs">
-      <div class="spec"><div class="v">2-layer</div><div class="k">flexible Kapton PCB</div></div>
-      <div class="spec"><div class="v">3.3 V / 1.8 V</div><div class="k">isolated analog and digital supplies</div></div>
-      <div class="spec"><div class="v">16-bit</div><div class="k">differential ADC</div></div>
+      <div class="spec"><div class="v">2-layer</div><div class="k">flexible polyimide (Kapton) PCB</div></div>
+      <div class="spec"><div class="v">24-bit</div><div class="k">ADS1298 analog front end</div></div>
+      <div class="spec"><div class="v">2 &times; 3.0 V</div><div class="k">separate analog and digital LDOs</div></div>
       <div class="spec"><div class="v">3</div><div class="k">prototypes assembled and reworked</div></div>
     </div>
 
     <figure class="wide">
       <img src="flex-strip.jpg" alt="Long flexible orange PCB with six electrode pads and a soldered Bluetooth module at one end" width="1440" height="378">
-      <figcaption>The assembled board. The orange pads are the electrodes that sit on the skin, and the module on the tab is the Bluetooth chip.</figcaption>
+      <figcaption>The assembled board, about 20 cm long. The six orange pads are the electrodes that sit on the skin, the larger pad at the end is the reference electrode, and the module on the tab is the Bluetooth chip.</figcaption>
     </figure>
 
     <div class="part">
       <div class="text">
-        <h3><span class="n">Design</span>What the board does</h3>
-        <p>It's a thin, bendable board that sits on the arm, reads muscle signals (EMG) through the electrode pads, and streams the data over Bluetooth to a phone app. I did the schematic and the 2-layer flex layout in Altium.</p>
+        <h3><span class="n">Design</span>Keeping a tiny signal clean</h3>
+        <p>The board sits on the skin, reads muscle signals (EMG) through its electrode pads, and streams the data over Bluetooth to a phone. Surface EMG is small, from tens of microvolts to a few millivolts, so most of the design is about keeping the board's own noise out of it. I worked on the schematic and the 2-layer flex layout in Altium.</p>
+      </div>
+      <div class="text">
         <ul>
-          <li>Separate 3.3 V analog (AVDD) and 1.8 V digital (DVDD) supplies, each from its own LDO, so digital noise stays out of the sensor signal</li>
-          <li>A 16-bit differential ADC to pick up the small EMG voltages</li>
-          <li>A BLE microcontroller on a tab at the end of the strip</li>
-          <li>Wavy (serpentine) traces near the chips so the copper can flex without cracking</li>
+          <li><b>Differential inputs.</b> Six pads form three differential pairs. Noise that hits both pads of a pair equally, like 60 Hz pickup through the body, cancels out (common-mode rejection).</li>
+          <li><b>One chip for the analog front end.</b> The TI ADS1298 has programmable-gain amplifiers and 24-bit delta-sigma ADCs built for biopotential signals.</li>
+          <li><b>Two LDOs instead of one.</b> Digital logic puts switching noise on its supply, so the analog side (AVDD) gets its own 3.0 V regulator, separate from the digital side (DVDD).</li>
+          <li><b>LDOs, not a switcher.</b> A switching regulator adds ripple right next to a high-gain input. At this board's low current, a low-noise LDO is quieter and simpler.</li>
+          <li><b>BLE over SPI.</b> An nRF5340 module reads the ADC over SPI and sends samples wirelessly, so no cable runs to the person wearing it.</li>
         </ul>
-        <h3><span class="n">Assembly</span>Soldering a chip onto a flexible board</h3>
-        <p>Flex boards are harder to solder than normal ones because they bend and can warp under heat. I hand-assembled and reworked 3 prototypes under a stereo microscope:</p>
+      </div>
+    </div>
+
+    <figure class="wide" style="margin-top:30px">
+      <div class="diagram emg-dia">
+        <svg viewBox="0 0 960 352" role="img" aria-label="Block diagram. Electrode pads feed the ADS1298 ADC, which talks to the nRF5340 BLE module over SPI and on to a phone. A battery feeds two TPS7A0230 LDOs: one makes AVDD for the analog side, the other DVDD for the digital side.">
+          <defs>
+            <marker id="eah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f-fg"/></marker>
+            <marker id="eahk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f-kap"/></marker>
+            <marker id="eahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="f-acc"/></marker>
+          </defs>
+          <rect x="1" y="1" width="806" height="342" rx="10" class="outline"/>
+          <text x="796" y="334" text-anchor="end" class="t-sm f-mut">flex board</text>
+          <rect x="12" y="12" width="408" height="206" class="dom-a"/>
+          <rect x="420" y="12" width="376" height="206" class="dom-d"/>
+          <text x="26" y="36" class="t-dom f-kap">Analog side (AVDD)</text>
+          <text x="434" y="36" class="t-dom f-acc">Digital side (DVDD)</text>
+
+          <rect x="30" y="70" width="150" height="76" rx="4" class="box"/>
+          <text x="105" y="102" text-anchor="middle" class="t-b">Electrode pads</text>
+          <text x="105" y="122" text-anchor="middle" class="t-s f-mut">6 pads, 3 pairs</text>
+          <rect x="30" y="168" width="150" height="36" rx="4" class="box"/>
+          <text x="105" y="191" text-anchor="middle" class="t-s">Reference pad</text>
+
+          <rect x="262" y="62" width="300" height="92" rx="4" class="box thick"/>
+          <line x1="420" y1="94" x2="420" y2="154" class="dash"/>
+          <text x="412" y="84" text-anchor="middle" class="t-b">ADS1298</text>
+          <text x="341" y="112" text-anchor="middle" class="t-s">PGA + 24-bit</text>
+          <text x="341" y="128" text-anchor="middle" class="t-s">delta-sigma ADC</text>
+          <text x="491" y="112" text-anchor="middle" class="t-s">SPI and</text>
+          <text x="491" y="128" text-anchor="middle" class="t-s">control logic</text>
+
+          <rect x="640" y="70" width="142" height="76" rx="4" class="box"/>
+          <text x="711" y="102" text-anchor="middle" class="t-b">nRF5340</text>
+          <text x="711" y="122" text-anchor="middle" class="t-s f-mut">BLE module</text>
+          <rect x="840" y="70" width="112" height="76" rx="4" class="box"/>
+          <text x="896" y="102" text-anchor="middle" class="t-b">Phone</text>
+          <text x="896" y="122" text-anchor="middle" class="t-s f-mut">receives data</text>
+
+          <line x1="180" y1="108" x2="260" y2="108" class="wire" marker-end="url(#eah)"/>
+          <text x="220" y="99" text-anchor="middle" class="t-sm f-mut">3 ch</text>
+          <line x1="562" y1="108" x2="638" y2="108" class="wire" marker-end="url(#eah)"/>
+          <text x="600" y="99" text-anchor="middle" class="t-sm f-mut">SPI</text>
+          <line x1="782" y1="108" x2="838" y2="108" class="wire dashed" marker-end="url(#eah)"/>
+          <text x="810" y="99" text-anchor="middle" class="t-sm f-mut">BLE</text>
+          <path d="M290 154 V186 H182" class="wire thin" marker-end="url(#eah)"/>
+
+          <rect x="30" y="248" width="150" height="52" rx="4" class="box"/>
+          <text x="105" y="271" text-anchor="middle" class="t-b">Battery</text>
+          <text x="105" y="290" text-anchor="middle" class="t-s f-mut">VBAT</text>
+          <rect x="262" y="248" width="150" height="52" rx="4" class="box s-kap"/>
+          <text x="337" y="270" text-anchor="middle" class="t-s">U3 TPS7A0230</text>
+          <text x="337" y="289" text-anchor="middle" class="t-s f-mut">LDO, 3.0 V</text>
+          <rect x="444" y="248" width="150" height="52" rx="4" class="box s-acc"/>
+          <text x="519" y="270" text-anchor="middle" class="t-s">U2 TPS7A0230</text>
+          <text x="519" y="289" text-anchor="middle" class="t-s f-mut">LDO, 3.0 V</text>
+          <path d="M105 300 V322 H519 V300" class="wire thin"/>
+          <path d="M337 322 V300" class="wire thin"/>
+          <circle cx="337" cy="322" r="3" class="f-fg"/>
+          <line x1="337" y1="248" x2="337" y2="156" class="rail-a" marker-end="url(#eahk)"/>
+          <text x="345" y="202" class="t-s f-kap">AVDD</text>
+          <line x1="500" y1="248" x2="500" y2="156" class="rail-d" marker-end="url(#eahs)"/>
+          <text x="508" y="202" class="t-s f-acc">DVDD</text>
+        </svg>
+      </div>
+      <figcaption>Signal and power paths, drawn from the Altium schematic. The ADS1298 has separate analog and digital supply pins, so it sits across both sides.</figcaption>
+    </figure>
+
+    <figure class="wide">
+      <img src="emg-3d.jpg" alt="Altium 3D view of the flex board showing six electrode pads, the ADS1298, the BLE module on a tab, two LDOs and the reference pad" width="1950" height="388" loading="lazy">
+      <figcaption>Altium 3D view (205.5 &times; 39.8 mm, 42 components, all 111 connections routed). The ADC (U4), BLE module (U1) and both LDOs (U2, U3) are grouped at one end so the long sensing section stays thin and bends freely. Near the chips I routed traces in a wave (serpentine) pattern so the copper can flex without cracking.</figcaption>
+    </figure>
+
+    <div class="part">
+      <div class="text">
+        <h3><span class="n">Assembly</span>Built by hand, three times</h3>
+        <p>A BGA has its solder joints underneath the part, so you can't check them by eye, and flex boards bend and warp under heat. I hand-assembled and reworked 3 prototypes under a stereo microscope:</p>
         <ul>
           <li>Put flux on the fine-pitch pads and checked the coverage under the scope</li>
-          <li>Placed the BGA chip with tweezers, then reflowed it with a hot-air gun moving in slow circles</li>
-          <li>As the solder melts, surface tension pulls the chip onto its pads by itself, so placement only has to be close</li>
+          <li>Placed the BGA with tweezers, then reflowed it with a hot-air gun moving in slow, even circles</li>
+          <li>As the solder melts, surface tension pulls the part onto its pads, so placement only has to be close</li>
+          <li>If a joint failed inspection, reworked it and repeated</li>
         </ul>
-        <p>I also wrote up the whole process as a step-by-step guide so the rest of the team could assemble boards too.</p>
+        <p>I wrote the whole process up as a step-by-step guide so the rest of the team could build boards too.</p>
+        <h3><span class="n">Debug</span>A clock pin tied the wrong way</h3>
+        <p>The ADS1298's CLKSEL pin picks its clock source. High selects the internal oscillator. Low tells the chip to wait for an external clock on its CLK pin. On the first boards CLKSEL was tied to ground with no external clock, so it had to be pulled high. We patched the prototypes with a jumper wire.</p>
+        <p>Next revision, I'd drive CLKSEL from a microcontroller pin so the clock source is set in firmware, and compare 5 V and 3.3 V input power since the board's results differed from the dev kit.</p>
       </div>
       <div class="figs two">
         <figure>
           <img src="flex-rework.jpg" alt="Joyce at a stereo microscope using a hot air rework gun on a flex PCB" width="766" height="1100" loading="lazy">
           <figcaption>Reworking a board with hot air under the microscope</figcaption>
         </figure>
-        <figure>
-          <img src="flex-closeup.jpg" alt="Close-up of the bare flex PCB showing the BGA pad array, fine-pitch footprints and copper traces" width="1279" height="1066" loading="lazy">
-          <figcaption>Bare board up close. The pad grid on the tab is where the Bluetooth chip goes, next to the fine-pitch ADC footprints.</figcaption>
-        </figure>
+        <div class="figs">
+          <figure>
+            <img src="flex-closeup.jpg" alt="Close-up of the bare flex PCB showing the BGA pad array, fine-pitch footprints and copper traces" width="1279" height="1066" loading="lazy">
+            <figcaption>Bare board up close. The pad grid on the tab is where the Bluetooth module goes, next to fine-pitch footprints and serpentine traces.</figcaption>
+          </figure>
+          <figure>
+            <img src="flex-clksel.jpg" alt="Jumper wire soldered next to the ADS1298 on the flex board" width="900" height="1200" loading="lazy">
+            <figcaption>The CLKSEL fix, a jumper wire beside the ADS1298</figcaption>
+          </figure>
+        </div>
       </div>
     </div>
   </section>
@@ -584,7 +696,7 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
         <div class="when">Jan 2026 to May 2026</div>
         <div class="what">
           <h3>Student Researcher · Mechatronics &amp; Motivation Lab, Georgia Tech</h3>
-          <p>Designed and assembled the wearable EMG flex PCB. Details in the <a href="#flex">flex PCB section</a> above.</p>
+          <p>Worked on the schematic and 2-layer flex layout for a wearable EMG board in Altium, then hand-assembled, reworked and debugged three prototypes. Details in the <a href="#flex">flex PCB section</a> above.</p>
         </div>
       </article>
       <article class="job">
