@@ -204,11 +204,11 @@ pre.code .k { color: var(--hl); }
 }
 .guzheng .instrument-h { display: none; position: absolute; top: 24px; left: 50%; width: 88%; transform: translateX(-50%); pointer-events: none; }
 .wide { margin-bottom: 30px; }
-.part.flex-design { grid-template-columns: minmax(0, 1fr) 112px; gap: 40px; }
-.part.flex-design .text { max-width: 40em; }
+.part.flex-design { grid-template-columns: 112px minmax(0, 1fr); gap: 32px; align-items: start; }
+.part.flex-design .text { max-width: 44em; }
 .vstrip img { width: 100%; max-width: 112px; margin-inline: auto; }
 .vstrip figcaption { font-size: 12px; }
-@media (max-width: 860px) { .part.flex-design { grid-template-columns: minmax(0, 1fr) 80px !important; gap: 16px; } }
+@media (max-width: 860px) { .part.flex-design { grid-template-columns: 80px minmax(0, 1fr) !important; gap: 16px; } }
 .exp { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .job { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; padding-block: 22px; border-bottom: 1px solid var(--line); }
 .job.has-photo { grid-template-columns: 170px minmax(0, 1fr) minmax(0, 300px); }
@@ -313,6 +313,10 @@ section[id] { scroll-margin-top: 64px; }
     </div>
 
     <div class="part flex-design">
+      <figure class="vstrip">
+        <img src="flex-strip-v.jpg" alt="The assembled flexible PCB, shown vertically, with six orange electrode pads and the Bluetooth module at the top" width="378" height="1440">
+        <figcaption>The assembled board, about 20 cm long</figcaption>
+      </figure>
       <div class="text">
         <h3><span class="n">Design</span>Keeping a tiny signal clean</h3>
         <p>The board sits on the skin, reads muscle signals (EMG) and streams them over Bluetooth. EMG is tiny, tens of microvolts to a few millivolts, so most of the design is about keeping noise out. I worked on the schematic and 2-layer flex layout in Altium.</p>
@@ -323,10 +327,6 @@ section[id] { scroll-margin-top: 64px; }
           <li><b>BLE over SPI.</b> An nRF5340 module reads the ADC and streams the samples wirelessly.</li>
         </ul>
       </div>
-      <figure class="vstrip">
-        <img src="flex-strip-v.jpg" alt="The assembled flexible PCB, shown vertically, with six orange electrode pads and the Bluetooth module at the top" width="378" height="1440">
-        <figcaption>The assembled board, about 20 cm long</figcaption>
-      </figure>
     </div>
 
     <figure class="wide" style="margin-top:30px">
