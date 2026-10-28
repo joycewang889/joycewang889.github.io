@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects | Joyce Wang</title>
+<meta name="description" content="Chip design, PCB and research projects by Joyce Wang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="die">
+  <div class="die-in">
+    <a class="brand" href="index.html"><b>Joyce Wang</b><span>EE @ Georgia Tech / chips + hardware</span></a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html"><span class="n">00</span>Welcome</a></li>
+        <li><a href="about.html"><span class="n">01</span>About</a></li>
+        <li><a href="projects.html" aria-current="page"><span class="n">02</span>Projects</a></li>
+        <li><a href="discovery.html"><span class="n">03</span>Discovery</a></li>
+        <li><a href="resume.html"><span class="n">04</span>Resume</a></li>
+        <li><a href="goals.html"><span class="n">05</span>Goals</a></li>
+        <li><a href="contact.html"><span class="n">06</span>Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<p class="kicker">02 / Projects</p>
+<h1>Projects</h1>
+<p class="lede">Most of my work sits somewhere between RTL and real hardware. Here are the projects I&rsquo;m proudest of, newest first, with photos and screenshots from the actual work.</p>
+
+<section class="feature" aria-labelledby="feat">
+  <div>
+    <span class="pin">FEATURED / DISCOVERY PROJECT</span>
+    <h2 id="feat">Wheatstone bridge sensor circuit</h2>
+    <p>I derived how a Wheatstone bridge turns a tiny resistance change into a voltage, made it about 100 times more sensitive with an instrumentation amplifier in LTspice, and built the bridge on a breadboard at the Hive to compare real measurements with my math.</p>
+    <a class="btn" href="discovery.html">Read the full project</a>
+  </div>
+  <figure>
+    <img src="img/bridge-breadboard.jpg" alt="Breadboard with the Wheatstone bridge resistors wired to a power supply" width="853" height="388">
+    <figcaption>My breadboard bridge with R2 = 2000 &Omega;.</figcaption>
+  </figure>
+</section>
+
+<h2><span class="tag">//</span>The flow I work in</h2>
+<p>A lot of these projects use the same chip design flow. RTL is the hardware description I write in SystemVerilog. GDS is the final layout file a foundry uses to make the chip. Everything in between turns one into the other.</p>
+<ol class="flow" aria-label="RTL to GDS flow">
+  <li><b>RTL</b><span>SystemVerilog design</span></li>
+  <li><b>Verify</b><span>UVM testbench, assertions, coverage</span></li>
+  <li><b>Synthesis</b><span>RTL to gates</span></li>
+  <li class="me"><b>Floorplan</b><span>macros, halos, blockages</span></li>
+  <li class="me"><b>Place + CTS</b><span>cells and clock tree</span></li>
+  <li class="me"><b>Route</b><span>metal layers</span></li>
+  <li class="me"><b>Signoff</b><span>timing closure, DRC</span></li>
+  <li><b>GDS</b><span>final layout</span></li>
+</ol>
+<p class="muted" style="font-size:.9rem">Gold steps are the ones I run in Cadence Innovus at Silicon Jackets.</p>
+
+<article class="proj">
+  <h2>RISC-V (RV32I) single-core CPU</h2>
+  <p class="meta">Personal project &middot; Sep 2026 to now &middot; in progress</p>
+  <ul class="chips"><li>SystemVerilog</li><li>Verification</li><li>RTL-to-GDS</li></ul>
+  <p>A small RISC-V CPU that I&rsquo;m designing, verifying and taking through physical design myself. It runs a subset of the RV32I instruction set and takes three cycles per instruction: fetch, decode and execute.</p>
+  <ul class="clean">
+    <li>Instructions so far: addi, add, sub, lw, sw, beq, sll, srl and ebreak</li>
+    <li>Hooking the core up to the SRAM and memory controller interfaces I was given</li>
+    <li>Testing each instruction in simulation as I add it, then setting up the RTL-to-GDS flow for the core</li>
+  </ul>
+  <p>I kept the instruction set small on purpose so I can get the whole flow working end to end before adding more.</p>
+</article>
+
+<article class="proj">
+  <h2>64-bit calculator ASIC</h2>
+  <p class="meta">Silicon Jackets &middot; Jan to Mar 2026 &middot; with a teammate</p>
+  <ul class="chips"><li>SystemVerilog</li><li>UVM</li><li>SVA</li><li>Cadence Innovus</li><li>Python</li><li>Tcl</li></ul>
+  <div class="stats">
+    <div class="stat"><b>1,000+ &rarr; 0</b><span>DRC violations</span></div>
+    <div class="stat"><b>&minus;2.7 &rarr; +0.01 ns</b><span>setup WNS</span></div>
+    <div class="stat"><b>99.82%</b><span>functional coverage</span></div>
+    <div class="stat"><b>7 / 7</b><span>assertions passing</span></div>
+  </div>
+  <p>The chip reads pairs of 64-bit numbers from SRAM, adds them with a 32-bit adder in two passes, and writes the result back. A seven-state FSM runs the whole thing. I took it from RTL all the way to a routed layout.</p>
+  <p><b>Verification.</b> I built a UVM testbench with a driver, monitor and scoreboard that checks every result against the expected sum, plus SystemVerilog assertions for the easy-to-break parts, like the carry making it from the low half to the high half.</p>
+  <p><b>Physical design.</b> The first routed design had over 1,000 DRC violations. I dug through the SRAM LEF files to see where routing wasn&rsquo;t allowed, then added placement halos around the SRAMs, routing blockages on the lower metal layers, and opened up more layers for routing. That got it to zero. Setup timing went from about &minus;2.7 ns to positive. I also wrote a Python script to parse the timing report and count the failing paths.</p>
+  <div class="grid2">
+    <figure><img src="../layout-before.jpg" alt="Innovus layout covered in DRC violation markers" width="637" height="680" loading="lazy"><figcaption>Before: DRC markers all over the routed design.</figcaption></figure>
+    <figure><img src="../layout-after.jpg" alt="Innovus window with an empty violation browser next to the clean layout" width="955" height="527" loading="lazy"><figcaption>After: the violation browser is empty.</figcaption></figure>
+  </div>
+  <figure><img src="../coverage.jpg" alt="Cadence IMC coverage report showing 99.82 percent overall coverage" width="1536" height="965" loading="lazy"><figcaption>Coverage report in Cadence IMC: 99.82% overall, 100% FSM and toggle coverage.</figcaption></figure>
+</article>
+
+<article class="proj">
+  <h2>Physical design at Silicon Jackets</h2>
+  <p class="meta">Silicon Jackets &middot; Jan 2026 to now</p>
+  <p>Beyond the calculator ASIC, I keep running RTL-to-GDS flows for the team: floorplanning, clock tree synthesis, routing, timing closure and DRC cleanup in Cadence Innovus, with Tcl and Python scripts to speed up the parts I repeat. In October 2026 I started on the physical design of Vortex, an open-source RISC-V GPU.</p>
+</article>
+
+<article class="proj">
+  <h2>Wearable EMG flex PCB</h2>
+  <p class="meta">Mechatronics &amp; Motivation VIP &middot; Jan to May 2026</p>
+  <ul class="chips"><li>Altium</li><li>Flex PCB</li><li>Mixed-signal</li><li>BGA rework</li></ul>
+  <p>A board that sits on the skin, reads muscle signals (EMG) through six electrode pads, and streams the data over Bluetooth. I co-designed the schematic and two-layer flex layout in Altium with the EMG subteam lead. The signals are tiny, from tens of microvolts to a few millivolts, so most of the design is about keeping noise out: differential inputs, a 24-bit ADS1298 front end, and separate low-noise regulators for the analog and digital sides.</p>
+  <p>I hand-assembled and reworked three prototypes under a stereo microscope, including BGA parts whose solder joints you can&rsquo;t see. On the first boards I traced a wrong clock-select pin strap back to the datasheet and patched it with a jumper wire. I wrote up the full assembly process so the rest of the team could build boards too.</p>
+  <figure><img src="../flex-strip.jpg" alt="Long flexible orange PCB with six electrode pads and a Bluetooth module at one end" width="1440" height="378" loading="lazy"><figcaption>The assembled board, about 20 cm long.</figcaption></figure>
+  <div class="grid2">
+    <figure><img src="../flex-closeup.jpg" alt="Close-up of the bare flex PCB showing the BGA pad array and fine-pitch footprints" width="1279" height="1066" loading="lazy"><figcaption>Bare board up close, before assembly.</figcaption></figure>
+    <figure><img src="../flex-clksel.jpg" alt="Jumper wire soldered next to the ADS1298 on the flex board" width="900" height="1200" loading="lazy"><figcaption>The clock-select fix, a jumper wire beside the ADS1298.</figcaption></figure>
+  </div>
+</article>
+
+<article class="proj">
+  <h2>OTA sizing optimizer</h2>
+  <p class="meta">GAMMA Research Group, Georgia Tech &middot; Dec 2025 to now</p>
+  <ul class="chips"><li>MATLAB</li><li>Simulink</li><li>Analog / mixed-signal</li></ul>
+  <p>An OTA is a type of amplifier, and sizing one means picking transistor dimensions and currents that hit a target figure of merit. I built a MATLAB surrogate optimization pipeline that found the same best design as brute-force search with five times fewer circuit evaluations (500 instead of 2,511) and about eight times less runtime. Along the way I found a bug in the figure-of-merit formula that kept pushing the optimizer toward designs that weren&rsquo;t physically valid, and flagged it so it could be fixed. I also build Simulink models of analog and mixed-signal circuits for the lab.</p>
+</article>
+
+<article class="proj">
+  <h2>NASA Student Launch</h2>
+  <p class="meta">Technical lead &middot; Jun 2023 to Jun 2024 &middot; high school</p>
+  <p>I led payload design, integration and flight-readiness testing for a high-power rocket with dual deployment, meaning two separate parachute events. It flew to about one mile, and our team qualified out of a national pool of more than 1,000 teams. For our design reviews with NASA engineers, we wrote a failure mode analysis and a two-person arming procedure.</p>
+  <div class="grid2">
+    <figure><img src="../nasa-model.jpg" alt="3D model of the launch vehicle with canard fins and an electronics bay" width="1652" height="1004" loading="lazy"><figcaption>3D model of the launch vehicle.</figcaption></figure>
+    <figure><img src="../nasa-launch.jpg" alt="Team members assembling a high-power rocket on a folding table at a launch field" width="1300" height="1111" loading="lazy"><figcaption>Getting the rocket ready on launch day.<span class="cr">Photo taken by my NASA Student Launch team</span></figcaption></figure>
+  </div>
+</article>
+
+<article class="proj">
+  <h2>Air suspension research and internship</h2>
+  <p class="meta">Independent research, Jun 2023 to Apr 2024 &middot; R&amp;D intern, Shanghai ZhiCheng Software, Summer 2024</p>
+  <div class="grid2">
+    <div>
+      <p>I designed a renewable energy air suspension system that turns a car&rsquo;s bouncing into electricity through a hydraulic bypass and a small generator. My calculations estimated about 6.8% more range for an electric vehicle. I wrote a 35-page paper on it, and it won awards including 2nd place at the 2024 Iowa State Science Fair and recognition from the Yale Science &amp; Engineering Association, NOAA and the Office of Naval Research.</p>
+      <p>The next summer I interned at Shanghai ZhiCheng Software, writing embedded control software for an air suspension system. It reads five live vehicle inputs and drives an air pump to hold chassis height within &plusmn;5 mm.</p>
+    </div>
+    <figure class="fig-narrow"><img src="../poster.jpg" alt="Trifold poster titled Renewable Energy Air Suspension System at a science fair" width="510" height="680" loading="lazy"><figcaption>My board at the 2024 State Science and Technology Fair of Iowa.</figcaption></figure>
+  </div>
+</article>
+</main>
+<footer>
+  <div class="in">
+    <span>Joyce (Jiusi) Wang &middot; ECE 1100 ePortfolio &middot; Fall 2026</span>
+    <span>Photos and screenshots are my own unless a caption says otherwise.</span>
+    <span><a href="../">Main portfolio page</a></span>
+  </div>
+</footer>
+</body>
+</html>
