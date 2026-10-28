@@ -204,6 +204,11 @@ pre.code .k { color: var(--hl); }
 }
 .guzheng .instrument-h { display: none; position: absolute; top: 24px; left: 50%; width: 88%; transform: translateX(-50%); pointer-events: none; }
 .wide { margin-bottom: 30px; }
+.part.flex-design { grid-template-columns: minmax(0, 1fr) 112px; gap: 40px; }
+.part.flex-design .text { max-width: 40em; }
+.vstrip img { width: 100%; max-width: 112px; margin-inline: auto; }
+.vstrip figcaption { font-size: 12px; }
+@media (max-width: 860px) { .part.flex-design { grid-template-columns: minmax(0, 1fr) 80px !important; gap: 16px; } }
 .exp { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .job { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 8px 28px; padding-block: 22px; border-bottom: 1px solid var(--line); }
 .job.has-photo { grid-template-columns: 170px minmax(0, 1fr) minmax(0, 300px); }
@@ -255,7 +260,7 @@ section[id] { scroll-margin-top: 64px; }
     <div>
       <div class="eyebrow">Electrical Engineering · Georgia Tech</div>
       <h1>Joyce<br><span>Wang</span></h1>
-      <p class="lede">I'm a third-year EE student. Most of my time outside class goes into chip design with Silicon Jackets, where I've worked on everything from RTL to layout. I also do hands-on hardware: designing and assembling flexible PCBs for a wearable EMG project. Below are my main projects and experience, with photos and screenshots from the real work.</p>
+      <p class="lede">Third-year EE student at Georgia Tech. I do chip design with Silicon Jackets, from RTL to layout, and hands-on hardware like the wearable EMG flex PCB below. Everything here has photos or screenshots from the real work.</p>
       <div class="facts">
         <span><strong>College GPA</strong> 4.0 / 4.0</span>
         <span><strong>Standing</strong> Junior</span>
@@ -307,25 +312,21 @@ section[id] { scroll-margin-top: 64px; }
       <div class="spec"><div class="v">3</div><div class="k">prototypes assembled and reworked</div></div>
     </div>
 
-    <figure class="wide">
-      <img src="flex-strip.jpg" alt="Long flexible orange PCB with six electrode pads and a soldered Bluetooth module at one end" width="1440" height="378">
-      <figcaption>The assembled board, about 20 cm long. The six orange pads are the electrodes that sit on the skin, the larger pad at the end is the reference electrode, and the module on the tab is the Bluetooth chip.</figcaption>
-    </figure>
-
-    <div class="part">
+    <div class="part flex-design">
       <div class="text">
         <h3><span class="n">Design</span>Keeping a tiny signal clean</h3>
-        <p>The board sits on the skin, reads muscle signals (EMG) through its electrode pads, and streams the data over Bluetooth to a phone. Surface EMG is small, from tens of microvolts to a few millivolts, so most of the design is about keeping the board's own noise out of it. I worked on the schematic and the 2-layer flex layout in Altium.</p>
-      </div>
-      <div class="text">
+        <p>The board sits on the skin, reads muscle signals (EMG) and streams them over Bluetooth. EMG is tiny, tens of microvolts to a few millivolts, so most of the design is about keeping noise out. I worked on the schematic and 2-layer flex layout in Altium.</p>
         <ul>
-          <li><b>Differential inputs.</b> Six pads form three differential pairs. Noise that hits both pads of a pair equally, like 60 Hz pickup through the body, cancels out (common-mode rejection).</li>
-          <li><b>One chip for the analog front end.</b> The TI ADS1298 has programmable-gain amplifiers and 24-bit delta-sigma ADCs built for biopotential signals.</li>
-          <li><b>Two LDOs instead of one.</b> Digital logic puts switching noise on its supply, so the analog side (AVDD) gets its own 3.0 V regulator, separate from the digital side (DVDD).</li>
-          <li><b>LDOs, not a switcher.</b> A switching regulator adds ripple right next to a high-gain input. At this board's low current, a low-noise LDO is quieter and simpler.</li>
-          <li><b>BLE over SPI.</b> An nRF5340 module reads the ADC over SPI and sends samples wirelessly, so no cable runs to the person wearing it.</li>
+          <li><b>Differential inputs.</b> Six pads form three pairs, so noise both pads pick up, like 60 Hz from the body, cancels out.</li>
+          <li><b>ADS1298 front end.</b> Programmable-gain amps and 24-bit delta-sigma ADCs built for biopotential signals.</li>
+          <li><b>Separate analog and digital LDOs.</b> Digital switching noise stays off the analog supply, and LDOs add no switching ripple next to the high-gain inputs.</li>
+          <li><b>BLE over SPI.</b> An nRF5340 module reads the ADC and streams the samples wirelessly.</li>
         </ul>
       </div>
+      <figure class="vstrip">
+        <img src="flex-strip-v.jpg" alt="The assembled flexible PCB, shown vertically, with six orange electrode pads and the Bluetooth module at the top" width="378" height="1440">
+        <figcaption>The assembled board, about 20 cm long</figcaption>
+      </figure>
     </div>
 
     <figure class="wide" style="margin-top:30px">
@@ -390,28 +391,26 @@ section[id] { scroll-margin-top: 64px; }
           <text x="508" y="202" class="t-s f-acc">DVDD</text>
         </svg>
       </div>
-      <figcaption>Signal and power paths, drawn from the Altium schematic. The ADS1298 has separate analog and digital supply pins, so it sits across both sides.</figcaption>
+      <figcaption>Signal and power paths from the Altium schematic. The ADS1298 has analog and digital supply pins, so it sits across both sides.</figcaption>
     </figure>
 
     <figure class="wide">
       <img src="emg-3d.jpg" alt="Altium 3D view of the flex board showing six electrode pads, the ADS1298, the BLE module on a tab, two LDOs and the reference pad" width="1950" height="388" loading="lazy">
-      <figcaption>Altium 3D view (205.5 &times; 39.8 mm, 42 components, all 111 connections routed). The ADC (U4), BLE module (U1) and both LDOs (U2, U3) are grouped at one end so the long sensing section stays thin and bends freely. Near the chips I routed traces in a wave (serpentine) pattern so the copper can flex without cracking.</figcaption>
+      <figcaption>Altium 3D view: 205.5 &times; 39.8 mm, 42 components, all 111 connections routed. The chips sit at one end so the sensing section stays thin and flexible, and serpentine traces let the copper bend without cracking.</figcaption>
     </figure>
 
     <div class="part">
       <div class="text">
         <h3><span class="n">Assembly</span>Built by hand, three times</h3>
-        <p>A BGA has its solder joints underneath the part, so you can't check them by eye, and flex boards bend and warp under heat. I hand-assembled and reworked 3 prototypes under a stereo microscope:</p>
+        <p>BGA joints sit under the part where you can't see them, and flex boards warp under heat. I hand-assembled and reworked 3 prototypes under a stereo microscope:</p>
         <ul>
-          <li>Put flux on the fine-pitch pads and checked the coverage under the scope</li>
-          <li>Placed the BGA with tweezers, then reflowed it with a hot-air gun moving in slow, even circles</li>
-          <li>As the solder melts, surface tension pulls the part onto its pads, so placement only has to be close</li>
-          <li>If a joint failed inspection, reworked it and repeated</li>
+          <li>Fluxed the fine-pitch pads and checked coverage under the scope</li>
+          <li>Placed the BGA with tweezers and reflowed it with hot air in slow circles, letting surface tension pull it onto the pads</li>
+          <li>Inspected, reworked any failed joints, and repeated</li>
         </ul>
-        <p>I wrote the whole process up as a step-by-step guide so the rest of the team could build boards too.</p>
+        <p>I wrote it up as a step-by-step guide so the rest of the team could build boards too.</p>
         <h3><span class="n">Debug</span>A clock pin tied the wrong way</h3>
-        <p>The ADS1298's CLKSEL pin picks its clock source. High selects the internal oscillator. Low tells the chip to wait for an external clock on its CLK pin. On the first boards CLKSEL was tied to ground with no external clock, so it had to be pulled high. We patched the prototypes with a jumper wire.</p>
-        <p>Next revision, I'd drive CLKSEL from a microcontroller pin so the clock source is set in firmware, and compare 5 V and 3.3 V input power since the board's results differed from the dev kit.</p>
+        <p>CLKSEL picks the ADS1298's clock: high for the internal oscillator, low for an external one. The first boards tied it low with no external clock, so we patched it high with a jumper wire. Next revision, I'd drive CLKSEL from a microcontroller pin so firmware sets the clock source.</p>
       </div>
       <div class="figs two">
         <figure>
@@ -421,7 +420,7 @@ section[id] { scroll-margin-top: 64px; }
         <div class="figs">
           <figure>
             <img src="flex-closeup.jpg" alt="Close-up of the bare flex PCB showing the BGA pad array, fine-pitch footprints and copper traces" width="1279" height="1066" loading="lazy">
-            <figcaption>Bare board up close. The pad grid on the tab is where the Bluetooth module goes, next to fine-pitch footprints and serpentine traces.</figcaption>
+            <figcaption>Bare board up close: Bluetooth module pads, fine-pitch footprints and serpentine traces</figcaption>
           </figure>
           <figure>
             <img src="flex-clksel.jpg" alt="Jumper wire soldered next to the ADS1298 on the flex board" width="900" height="1200" loading="lazy">
@@ -443,17 +442,16 @@ section[id] { scroll-margin-top: 64px; }
     </div>
     <div class="part">
       <div class="text">
-        <p>A small RISC-V CPU I'm designing and verifying in SystemVerilog. It runs a subset of the RV32I instruction set and takes 3 cycles per instruction: fetch, decode, and execute. I'm also taking it through the physical design flow so it ends up as an actual layout.</p>
+        <p>A small RISC-V CPU I'm designing, verifying and taking to layout in SystemVerilog. It runs a subset of RV32I at 3 cycles per instruction: fetch, decode, execute.</p>
         <h3>What I'm working on</h3>
         <ul>
-          <li>The fetch, decode, and execute logic and the control that steps through them</li>
-          <li>Connecting the core to the SRAM and memory controller interfaces we were given</li>
-          <li>Testing each instruction in simulation as I add it</li>
-          <li>Setting up the RTL-to-GDS flow for the core</li>
+          <li>Fetch, decode and execute logic, plus the control that steps through them</li>
+          <li>Hooking the core up to the SRAM and memory controller interfaces</li>
+          <li>Testing each instruction in simulation, then running RTL-to-GDS on the core</li>
         </ul>
         <h3>Instructions it supports</h3>
         <p class="mono" style="font-size:14px">addi · add · sub · lw · sw · beq · sll · srl · ebreak</p>
-        <p>I'm keeping the instruction set small at first so I can get the whole flow working end to end, then add more.</p>
+        <p>Small instruction set first, so the full flow works end to end before I add more.</p>
       </div>
       <figure>
         <div class="diagram">
@@ -518,14 +516,14 @@ section[id] { scroll-margin-top: 64px; }
     <div class="part">
       <div class="text">
         <h3><span class="n">Digital design</span>How it works</h3>
-        <p>The chip reads pairs of 64-bit numbers out of SRAM, adds them with a 32-bit adder in two passes, and writes the 64-bit result back. I took it all the way from RTL to a routed layout.</p>
+        <p>The chip reads pairs of 64-bit numbers from SRAM, adds them with a 32-bit adder in two passes, and writes the result back. I took it from RTL to a routed layout.</p>
         <ul>
-          <li><b>Controller:</b> a 7-state FSM (IDLE, READ, READ2, ADD, ADD2, WRITE, END) that walks through memory with read and write pointers</li>
-          <li><b>Adder:</b> 32-bit ripple carry built from full adders in a <code>generate</code> loop. The low half goes first and its carry feeds the high half</li>
-          <li><b>Result buffer:</b> holds the low and high halves until the full 64 bits are ready to write</li>
-          <li><b>Memory:</b> two CF_SRAM_1024x32 macros, one for each 32-bit half</li>
+          <li><b>Controller.</b> 7-state FSM (IDLE, READ, READ2, ADD, ADD2, WRITE, END) stepping read and write pointers through memory</li>
+          <li><b>Adder.</b> 32-bit ripple carry from full adders in a <code>generate</code> loop. The low half's carry feeds the high half</li>
+          <li><b>Result buffer.</b> Holds both halves until all 64 bits are ready</li>
+          <li><b>Memory.</b> Two CF_SRAM_1024x32 macros, one per half</li>
         </ul>
-        <p>One bug I hit: in the ADD state I had to use the SRAM output <code>r_data[31:0]</code> directly, because the register I meant to use wasn't updated yet that cycle. It made me a lot more careful about which cycle a value is actually valid in.</p>
+        <p>One bug I hit: in ADD I had to use the SRAM output <code>r_data[31:0]</code> directly, because my register wasn't updated yet that cycle. Now I always check which cycle a value is actually valid in.</p>
       </div>
       <div class="figs two">
         <figure>
@@ -565,9 +563,8 @@ section[id] { scroll-margin-top: 64px; }
     <div class="part">
       <div class="text">
         <h3><span class="n">Verification</span>Testbench and coverage</h3>
-        <p>I built a UVM-style testbench from scratch: sequence item, sequencer, driver, monitor, and scoreboard, all connected to the design through an interface. The scoreboard checks every result the chip writes back against the expected sum.</p>
-        <p>I also wrote assertions for the things that are easy to break, like the carry making it from the low half to the high half, the halves being written in the right order, and reset behavior.</p>
-        <p>In Cadence IMC, FSM and toggle coverage both came out at 100%. One code block never gets hit, which is why the overall number is 99.82%.</p>
+        <p>I built a UVM-style testbench from scratch (sequence item, sequencer, driver, monitor, scoreboard). The scoreboard checks every result against the expected sum, and assertions cover the easy-to-break parts: the carry into the high half, write order, and reset.</p>
+        <p>FSM and toggle coverage hit 100% in Cadence IMC. One code block never gets hit, so overall coverage is 99.82%.</p>
       </div>
       <div class="figs">
         <figure>
@@ -586,15 +583,13 @@ assert_carry_prop: <span class="k">assert property</span> (
     <div class="part">
       <div class="text">
         <h3><span class="n">Physical design</span>Getting to zero DRCs</h3>
-        <p>I ran the full RTL-to-GDS flow in Innovus: floorplan, placement, clock tree synthesis, and routing. The design I started with had over 1,000 DRC violations.</p>
-        <p>I went through the SRAM LEF obstructions to figure out where routing wasn't allowed around the macros, then fixed it step by step:</p>
+        <p>I ran the full Innovus flow (floorplan, placement, clock tree synthesis, routing) on a design that started with 1,000+ DRC violations. After reading the SRAM LEF obstructions to see where routing wasn't allowed, I fixed it in three steps:</p>
         <ul>
           <li>15-unit placement halos around the SRAMs</li>
           <li>routing blockages on MET1 to MET3 over the macros</li>
           <li>opening up more metal layers for routing</li>
         </ul>
-        <p>That got it to zero. Setup timing went from −2.709 ns to +0.01 ns and hold from −0.032 ns to 0.</p>
-        <p>I also wrote a Python script that reads the timing report, counts the failing paths (50), and finds the average gate depth (about 6). Plus some Tcl procs to highlight the SRAMs and critical paths in the GUI.</p>
+        <p>That got it to zero. Setup timing went from −2.709 ns to +0.01 ns and hold from −0.032 ns to 0. I also wrote a Python script that parses the timing report (50 failing paths, average gate depth about 6) and Tcl procs that highlight the SRAMs and critical paths in the GUI.</p>
       </div>
       <div class="figs">
         <div class="figs two">
@@ -637,27 +632,27 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
 
     <div class="part">
       <div class="text">
-        <p>Cars bounce all the time, and shock absorbers just turn that motion into heat. I wanted to see if an EV could get some of that energy back as electricity, so I designed a suspension system to do it.</p>
+        <p>Shock absorbers turn a car's bouncing into heat. I designed a suspension that lets an EV get some of that energy back as electricity.</p>
         <h3>How it works</h3>
         <ul>
-          <li>A hydraulic bypass with check valves sends fluid one way through a vane motor, so it spins whether the shock is compressing or extending</li>
-          <li>The vane motor drives a generator that charges the battery</li>
-          <li>I ran calculations and simulations on the energy conversion and estimated about 6.8% more driving range</li>
+          <li>A hydraulic bypass with check valves sends fluid one way through a vane motor, so it spins whether the shock compresses or extends</li>
+          <li>The motor drives a generator that charges the battery</li>
+          <li>My calculations and simulations estimated about 6.8% more driving range</li>
         </ul>
         <h3>The app</h3>
-        <p>I also built a Bluetooth app to monitor and control the system in real time: vehicle height, suspension settings, and a "GreenPower" mode that turns regeneration on. The app interface is copyrighted.</p>
+        <p>A Bluetooth app monitors and controls the system in real time: vehicle height, suspension settings, and a "GreenPower" regeneration mode. The app interface is copyrighted.</p>
         <h3>Awards</h3>
         <p>Yale Science &amp; Engineering Association, NOAA, the Office of Naval Research, and Iowa State University.</p>
       </div>
       <div class="figs">
         <figure>
           <img src="susp-concept.jpg" alt="Slide titled Electricity generation working principles showing shock absorber, hydraulic jets, Pelton wheels, generators, charge controller and battery" width="1400" height="803" loading="lazy">
-          <figcaption>Concept slide from my presentation, showing a version with hydraulic jets and turbine wheels. Each wheel turns a generator, and a charge controller stores the power in the battery.</figcaption>
+          <figcaption>Concept slide: hydraulic jets spin turbine wheels, each wheel turns a generator, and a charge controller stores the power.</figcaption>
         </figure>
         <div class="figs two">
           <figure>
             <img src="susp-sketch.jpg" alt="Sketch of a shock absorber cylinder with a hydraulic bypass loop through a rotor, with red and blue flow arrows" width="542" height="900" loading="lazy">
-            <figcaption>My sketch of the bypass. Check valves send the oil the same way through the rotor whether the piston goes up (red) or down (blue).</figcaption>
+            <figcaption>My bypass sketch. Oil flows the same way through the rotor whether the piston goes up (red) or down (blue).</figcaption>
           </figure>
           <figure>
             <img src="poster.jpg" alt="Trifold poster titled Renewable Energy Air Suspension System at a science fair" width="510" height="680" loading="lazy">
@@ -681,37 +676,36 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
         <div class="when">Jan 2026 to now</div>
         <div class="what">
           <h3>ASIC Physical Design Engineer · Silicon Jackets</h3>
-          <p>Georgia Tech's chip design team. I run RTL-to-GDS flows in Cadence Innovus, close timing, fix DRCs, and write Python and Tcl scripts to speed up the flow. See the <a href="#asic">calculator ASIC</a> and <a href="#cpu">RISC-V CPU</a> above.</p>
+          <p>Georgia Tech's chip design team. I run RTL-to-GDS flows in Cadence Innovus, close timing, fix DRCs, and script the flow in Python and Tcl. See the <a href="#asic">calculator ASIC</a> and <a href="#cpu">RISC-V CPU</a>.</p>
         </div>
       </article>
       <article class="job">
         <div class="when">Dec 2025 to now</div>
         <div class="what">
           <h3>Research Assistant · GAMMA Research Group, Georgia Tech</h3>
-          <p>I built a MATLAB surrogate optimization pipeline that sizes OTA circuits (a type of amplifier). It reached the same best design as brute-force search with <b>5x fewer circuit evaluations</b> (500 vs. 2,511) and about <b>8x less runtime</b> (3 min vs. 25 min).</p>
-          <p>I also found a bug in the figure-of-merit formula that kept pushing the optimizer toward designs that weren't physically valid, confirmed it across both sweeps, and flagged it so it could be fixed.</p>
+          <p>Built a MATLAB surrogate optimization pipeline that sizes OTA amplifiers. It found the same best design as brute-force search with <b>5x fewer circuit evaluations</b> (500 vs. 2,511) and about <b>8x less runtime</b> (3 min vs. 25 min). I also found and flagged a bug in the figure-of-merit formula that pushed the optimizer toward physically invalid designs.</p>
         </div>
       </article>
       <article class="job">
         <div class="when">Jan 2026 to May 2026</div>
         <div class="what">
           <h3>Student Researcher · Mechatronics &amp; Motivation Lab, Georgia Tech</h3>
-          <p>Co-designed a wearable EMG board with the EMG subteam lead: schematic and 2-layer flex layout in Altium. I then hand-assembled, reworked and debugged three prototypes. Details in the <a href="#flex">flex PCB section</a> above.</p>
+          <p>Co-designed a wearable EMG flex board with the EMG subteam lead in Altium, then hand-assembled, reworked and debugged three prototypes. See the <a href="#flex">flex PCB section</a>.</p>
         </div>
       </article>
       <article class="job">
         <div class="when">Summer 2024</div>
         <div class="what">
           <h3>R&amp;D Intern Engineer · Shanghai ZhiCheng Software Co.</h3>
-          <p>Wrote embedded control software that reads 5 live vehicle inputs (chassis height, speed, brake, throttle, steering) and drives an air pump to hold chassis height within <b>±5 mm</b> across 4 driving conditions. I also built a Bluetooth app that shows the live data for diagnostics, and the software got a copyright.</p>
+          <p>Wrote embedded control software that reads 5 live vehicle inputs and drives an air pump to hold chassis height within <b>±5 mm</b> across 4 driving conditions. Also built a Bluetooth diagnostics app; the software is copyrighted.</p>
         </div>
       </article>
       <article class="job has-photo">
         <div class="when">Jun 2023 to Jun 2024</div>
         <div class="what">
           <h3>Technical Lead · NASA Student Launch</h3>
-          <p>Led payload design, integration, and flight-readiness testing for a high-power rocket with dual deployment (two parachute events). It flew to about <b>1 mile</b>, and we qualified out of a national pool of 1,000+ teams.</p>
-<p>The payload was a Precision Altitude Adjustment System: a Teensy 4.1 reading an IMU and a barometer, with servo-driven canards that nudge the rocket toward the target altitude. Recovery used two altimeters so one failure would not end the flight. For design reviews with NASA engineers we wrote a failure mode analysis and a two-person arming procedure.</p>
+          <p>Led payload design, integration and flight-readiness testing for a dual-deployment high-power rocket. It flew to about <b>1 mile</b>, and we qualified out of 1,000+ teams nationally.</p>
+<p>The payload adjusted altitude in flight: a Teensy 4.1 read an IMU and barometer and drove servo canards toward the target altitude. Two altimeters handled recovery so one failure wouldn't end the flight. For NASA design reviews we wrote a failure mode analysis and a two-person arming procedure.</p>
 <figure style="margin-top:6px"><img src="nasa-model.jpg" alt="3D model of the launch vehicle with canard fins and electronics bay" width="1652" height="1004" loading="lazy"><figcaption>3D model of the launch vehicle</figcaption></figure>
         </div>
         <figure>
@@ -765,7 +759,7 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
         <div>
           <div class="kicker">Golf &amp; tennis</div>
           <h3>About 10 years on the course</h3>
-          <p>I started golf as a little kid and played varsity all through high school. I've also played in international junior tours. Tennis is my other sport, and I played varsity tennis too.</p>
+          <p>I started golf as a little kid, played varsity all through high school, and played international junior tours. I also played varsity tennis.</p>
           <div class="facts-row">
             <span class="pill"><b>1st</b> District, CA</span>
             <span class="pill"><b>Runner-up</b> Regionals, CA</span>
@@ -794,7 +788,7 @@ violated = sum(1 <span class="k">for</span> p <span class="k">in</span> paths <s
           <div>
             <div class="kicker">Guzheng 古筝</div>
             <h3>21 strings and a lot of practice</h3>
-            <p>The guzheng is a Chinese zither: you tune it by sliding the bridges under each string, and pluck with picks taped to your fingers. I've played since I was young and earned the Central Conservatory of Music Level 8 certificate (out of 9). I've performed with the California Youth Chinese Symphony.</p>
+            <p>A Chinese zither you tune by sliding a bridge under each string and pluck with picks taped to your fingers. I've played since I was young, earned the Central Conservatory of Music Level 8 certificate (out of 9), and performed with the California Youth Chinese Symphony.</p>
             <div class="facts-row">
               <span class="pill"><b>Level 8</b> / 9 CCOM</span>
               <span class="pill"><b>CYCS</b> performer</span>
